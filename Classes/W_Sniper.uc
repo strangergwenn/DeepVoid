@@ -12,26 +12,6 @@ class W_Sniper extends W_Rifle;
 	Properties
 ----------------------------------------------------------*/
 
-/*--- Use lens effect ---*/
-simulated function ZoomIn()
-{
-	DVHUD(DVPlayerController(DVPawn(Owner).Controller).myHUD).SetSniperState(true);
-	bZoomed = true;
-}
-
-
-/*--- Don't use lens effect ---*/
-simulated function ZoomOut()
-{
-	DVHUD(DVPlayerController(DVPawn(Owner).Controller).myHUD).SetSniperState(false);
-	bZoomed = false;
-}
-
-
-/*----------------------------------------------------------
-	Properties
-----------------------------------------------------------*/
-
 defaultproperties
 {
 	// Settings

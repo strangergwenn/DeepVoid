@@ -26,4 +26,5 @@ defaultproperties
 	SmoothingFactor=1.0
 	ZoomSensitivity=0.3
 	ZoomedFOV=15.0
+	bUseLens=true
 }
