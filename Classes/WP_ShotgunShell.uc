@@ -46,9 +46,9 @@ defaultproperties
     bCollideWorld=true
     
     Damage=7
-    Speed=7000
+    Speed=10000
     DrawScale=1.0
     MaxSpeed=15000
     AccelRate=20000.0
-    MomentumTransfer=5000
+    MomentumTransfer=10000
 }

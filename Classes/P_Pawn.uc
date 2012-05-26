@@ -23,28 +23,28 @@ defaultproperties
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_SpaceSuit'
 	End Object
 	
-	// Set to true for verbose localized traces
+	// Set to true for verbose logging
 	bDVLog=false
 	
 	// Gameplay
 	JumpZ=620.0
 	AirSpeed=850.0
+	AirControl=0.2
 	MaxJumpHeight=100.0
 	ZoomedGroundSpeed=300
 	UnzoomedGroundSpeed=750
-	JumpDamageMultiplier=1.1
 	HeadshotMultiplier=1.5
-	AirControl=0.2
+	JumpDamageMultiplier=1.1
 	
 	// Eyes
-	CrouchHeight=70.0
 	StandardEyeHeight=70.0
 	HeadBobbingFactor=0.8
 	RecoilLength=7000.0
+	CrouchHeight=70.0
+	
+	// External data
 	FootStepSound=SoundCue'DV_Sound.Gameplay.A_Walk'
 	HitSound=SoundCue'DV_Sound.Impacts.A_Impact_Player'
-	
-	// Materials
 	TeamMaterials[0]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Red'
 	TeamMaterials[1]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Blue'
 }

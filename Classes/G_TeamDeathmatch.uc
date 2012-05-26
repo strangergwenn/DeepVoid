@@ -17,6 +17,7 @@ defaultproperties
 	MaxScore=50
 	RestartTimer=10.0
 	DefaultPawnClass=class'P_Pawn'
+	DefaultTurretClass=class'T_DefensiveTurret'
 	
 	WeaponListLength=5
 	DefaultWeapon=class'W_Rifle'
