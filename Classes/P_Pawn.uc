@@ -23,8 +23,8 @@ defaultproperties
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_SpaceSuit'
 	End Object
 	
-	// Set to true for verbose logging
-	bDVLog=false
+	// Set to true for heatmap logs
+	bDVLog=true
 	
 	// Gameplay
 	JumpZ=620.0
