@@ -24,7 +24,7 @@ defaultproperties
 	End Object
 	
 	// Set to true for heatmap logs
-	bDVLog=true
+	//bDVLog=true
 	
 	// Gameplay
 	JumpZ=620.0
