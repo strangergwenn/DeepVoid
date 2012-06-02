@@ -24,7 +24,7 @@ defaultproperties
 	End Object
 	
 	// Settings
-	RoundsPerSec=10.0
+	RoundsPerSec=9.0
 	MinTurretRotRate=100000
 	MaxTurretRotRate=300000
 	ProjClass=class'WP_ShotgunShell'
