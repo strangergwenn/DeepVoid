@@ -33,6 +33,7 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Rifle'
 	
 	// Weaponry
+	AddonClass1=class'WA_LaserBeam'
 	InstantHitMomentum(0)=10000.0
 	InstantHitDamage(0)=15.0
 	FireInterval(0)=0.10

@@ -22,6 +22,7 @@ defaultproperties
 	End Object
 	
 	// Properties
+	MountSocket=Mount2
 	ZoomOffset=(X=1.500000,Y=-40.000000,Z=0.000000)
 	SmoothingFactor=1.0
 	ZoomSensitivity=0.3
