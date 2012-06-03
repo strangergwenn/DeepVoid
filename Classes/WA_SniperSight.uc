@@ -26,6 +26,6 @@ defaultproperties
 	ZoomOffset=(X=1.500000,Y=-40.000000,Z=0.000000)
 	SmoothingFactor=1.0
 	ZoomSensitivity=0.3
-	ZoomedFOV=15.0
+	ZoomedFOV=20.0
 	bUseLens=true
 }
