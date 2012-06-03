@@ -5,7 +5,7 @@
  *  @author Gwennaël ARBONA
  **/
 
-class WP_ShotgunShell extends DVProjectile;
+class WP_Grenade extends DVProjectile;
 
 
 /*----------------------------------------------------------
@@ -15,16 +15,17 @@ class WP_ShotgunShell extends DVProjectile;
 defaultproperties
 {
 	ProjFlightTemplate=ParticleSystem'VH_Manta.Effects.PS_Manta_Projectile'
-	ProjExplosionTemplate=ParticleSystem'WP_ShockRifle.Particles.P_WP_ShockRifle_Beam_Impact'
-	ExplosionSound=SoundCue'DV_Sound.Impacts.A_Impact_Shotgun'
+	ProjExplosionTemplate=ParticleSystem'WP_RocketLauncher.Effects.P_WP_RocketLauncher_RocketExplosion'
+	ExplosionSound=SoundCue'A_Weapon_RocketLauncher.Cue.A_Weapon_RL_Impact_Cue'
     MyDamageType=class'DamageType'
 	
     bCollideWorld=true
     
-    Damage=8
-    Speed=15000
+    Damage=80
+    DamageRadius=300
+    Speed=5000
     DrawScale=1.0
-    MaxSpeed=25000
-    AccelRate=20000.0
+    MaxSpeed=10000
+    AccelRate=15000.0
     MomentumTransfer=10000
 }

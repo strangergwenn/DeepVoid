@@ -5,7 +5,7 @@
  *  @author Gwennaël ARBONA
  **/
 
-class W_GrenadeLauncher extends W_Rifle;
+class W_GrenadeLauncher extends DVWeapon;
 
 
 /*----------------------------------------------------------
@@ -14,6 +14,28 @@ class W_GrenadeLauncher extends W_Rifle;
 
 defaultproperties
 {
+	// Mesh
+	Begin Object Name=WeaponMesh
+		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_Rifle'
+	End Object
+	Mesh=WeaponMesh
+	
+	// Settings
+	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_ShotgunShot'
+	WeaponEmptySound=SoundCue'DV_Sound.Weapons.A_Empty'
+	ZoomOffset=(X=1.50000,Y=23.000000,Z=0.000000)
+	ZoomSensitivity=0.8
+	SmoothingFactor=0.5
+	ZoomedFOV=45
+	
+	// Interface
 	WeaponIconPath="DV_Spacegear"
-	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
+	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Shotgun'
+	
+	// Weaponry
+	WeaponProjectiles(0)=class'WP_Grenade'
+	WeaponFireTypes(0)=EWFT_Projectile
+	FireInterval(0)=1.0
+	RecoilAngle=1000.0
+	MaxAmmo=20
 }

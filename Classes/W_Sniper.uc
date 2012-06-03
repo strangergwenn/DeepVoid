@@ -7,16 +7,6 @@
 
 class W_Sniper extends W_Rifle;
 
-/*----------------------------------------------------------
-	Various methods
-----------------------------------------------------------*/
-
-/* --- Beam ---*/
-reliable client simulated function bool UseBeam()
-{
-	return false;
-}
-
 
 /*----------------------------------------------------------
 	Properties
@@ -32,7 +22,7 @@ defaultproperties
 	
 	// Weaponry
 	InstantHitMomentum(0)=40000.0
-	InstantHitDamage(0)=100.0
+	InstantHitDamage(0)=90.0
 	FireInterval(0)=1.0
 	SmoothingFactor=1.0
 	RecoilAngle=2000.0

@@ -82,7 +82,7 @@ defaultproperties
 	WeaponProjectiles(0)=class'WP_ShotgunShell'
 	WeaponFireTypes(0)=EWFT_Custom
 	FireInterval(0)=0.5
-	RecoilAngle=3000.0
+	RecoilAngle=1000.0
 	SpreadDist=0.04
 	MaxAmmo=40
 }
