@@ -74,11 +74,11 @@ defaultproperties
 	ZoomedFOV=45
 	
 	// Interface
+	WeaponPath="DeepVoid"
 	WeaponIconPath="DV_Spacegear"
 	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Shotgun'
 	
 	// Weaponry
-	AddonClass1=class'WA_LaserBeam'
 	WeaponProjectiles(0)=class'WP_ShotgunShell'
 	WeaponFireTypes(0)=EWFT_Custom
 	FireInterval(0)=0.5

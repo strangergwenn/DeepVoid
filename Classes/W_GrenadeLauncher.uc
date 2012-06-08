@@ -29,6 +29,7 @@ defaultproperties
 	ZoomedFOV=45
 	
 	// Interface
+	WeaponPath="DeepVoid"
 	WeaponIconPath="DV_Spacegear"
 	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Shotgun'
 	

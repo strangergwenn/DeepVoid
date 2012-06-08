@@ -16,11 +16,8 @@ defaultproperties
 {
 	MaxScore=50
 	RestartTimer=10.0
+	SpawnProtectTime=5.0
 	DefaultPawnClass=class'P_Pawn'
-	DefaultTurretClass=class'T_DefensiveTurret'
-	
-	MusicIntro=SoundCue'DV_Music.Map1_DV_Intro_Cue'
-	MusicLoop=SoundCue'DV_Music.Map1_DV_Loop_Cue'
 	
 	WeaponListLength=5
 	DefaultWeapon=class'W_Rifle'
