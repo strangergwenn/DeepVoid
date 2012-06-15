@@ -14,6 +14,10 @@ class WA_SniperSight extends DVWeaponAddon;
 
 defaultproperties
 {
+	// Interface
+	IconPath="DV_Spacegear"
+	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
+	
 	// Mesh
 	Begin Object Name=AddonMesh
 		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_SniperSight'
@@ -22,7 +26,7 @@ defaultproperties
 	End Object
 	
 	// Properties
-	MountSocket=Mount2
+	SocketID=2
 	ZoomOffset=(X=1.500000,Y=-40.000000,Z=0.000000)
 	SmoothingFactor=1.0
 	ZoomSensitivity=0.3

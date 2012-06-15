@@ -61,7 +61,7 @@ simulated function AttachToWeapon(DVWeapon wp)
 	
 	BeamPSC.bUpdateComponentInTick = true;
 	BeamPSC.SetTickGroup(TG_EffectsUpdateWork);
-	SkeletalMeshComponent(wp.Mesh).AttachComponentToSocket(BeamPSC, MountSocket);
+	SkeletalMeshComponent(wp.Mesh).AttachComponentToSocket(BeamPSC, MountSocket());
 }
 
 
@@ -72,7 +72,7 @@ simulated function Tick(float DeltaTime)
 	local rotator SR;
 	
 	// Trace
-	SkeletalMeshComponent(Weap.Mesh).GetSocketWorldLocationAndRotation(MountSocket, SL, SR);
+	SkeletalMeshComponent(Weap.Mesh).GetSocketWorldLocationAndRotation(MountSocket(), SL, SR);
 	Trace(
 		Impact,
 		Unused,
@@ -108,8 +108,13 @@ simulated function Tick(float DeltaTime)
 
 defaultproperties
 {
+	// Interface
+	IconPath="DV_Spacegear"
+	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
+	
+	// Data
+	SocketID=1
 	bBeamActive=false
-	MountSocket=Mount1
 	BeamPSCTemplate_Blue=ParticleSystem'DV_CoreEffects.FX.PS_LaserBeamEffect_Blue'
 	BeamPSCTemplate_Red=ParticleSystem'DV_CoreEffects.FX.PS_LaserBeamEffect'
 }
