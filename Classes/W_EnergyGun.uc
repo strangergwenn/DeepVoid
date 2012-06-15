@@ -15,7 +15,6 @@ class W_EnergyGun extends W_Rifle;
 defaultproperties
 {
 	// Settings
-	WeaponPath="DeepVoid"
 	WeaponIconPath="DV_Spacegear"
 	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Sniper'
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_SniperShot'

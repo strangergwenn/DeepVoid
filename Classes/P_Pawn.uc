@@ -43,6 +43,7 @@ defaultproperties
 	CrouchHeight=70.0
 	
 	// External data
+	ModuleName="DeepVoid"
 	FootStepSound=SoundCue'DV_Sound.Gameplay.A_Walk'
 	HitSound=SoundCue'DV_Sound.Impacts.A_Impact_Player'
 	TeamMaterials[0]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Red'
