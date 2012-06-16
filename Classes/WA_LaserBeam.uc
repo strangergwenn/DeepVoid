@@ -68,8 +68,11 @@ simulated function AttachToWeapon(DVWeapon wp)
 /*--- Laser pointer end --*/
 simulated function Tick(float DeltaTime)
 {
+	// Init
 	local vector Impact, SL, Unused;
 	local rotator SR;
+	if (Weap == None)
+		return;
 	
 	// Trace
 	SkeletalMeshComponent(Weap.Mesh).GetSocketWorldLocationAndRotation(MountSocket(), SL, SR);
@@ -99,6 +102,18 @@ simulated function Tick(float DeltaTime)
 			BeamPSC.SetVectorParameter('BeamEnd', VSize(Impact - SL) * vect(1,0,0));
 		}
 	}
+}
+
+
+/*--- Destroying ---*/
+simulated function DetachFromWeapon(DVWeapon wp)
+{
+	if (BeamPSC != None)
+	{
+		BeamPSC.DeactivateSystem();
+	}
+	bBeamActive = false;
+	super.DetachFromWeapon(wp);
 }
 
 
