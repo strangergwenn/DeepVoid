@@ -16,7 +16,7 @@ defaultproperties
 {
 	FireRateBonus=1.1
 	
-	SocketID=3
+	SocketID=1
 	IconPath="DV_Spacegear"
 	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
 }
