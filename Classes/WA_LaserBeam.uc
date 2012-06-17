@@ -45,7 +45,19 @@ simulated function AttachToWeapon(DVWeapon wp)
 {
 	local DVPawn target;
 	super.AttachToWeapon(wp);
-	target = DVPawn(wp.Owner);
+	
+	// Owner check
+	if (wp.Owner.IsA('DVConfigBench'))
+	{
+		if (DVConfigBench(wp.Owner).PC == None)
+			return;
+		else
+			target = DVPawn(DVConfigBench(wp.Owner).PC.Pawn);
+	}
+	else
+	{
+		target = DVPawn(wp.Owner);
+	}
 	if (target == None)
 		return;
 	
