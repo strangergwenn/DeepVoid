@@ -14,6 +14,12 @@ class WA_RapidFire extends DVWeaponAddon;
 
 defaultproperties
 {
+	// Mesh
+	Begin Object Name=AddonMesh
+		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_LongCannon_Red'
+		Rotation=(Yaw=0, Pitch=32768, Roll=16384)
+	End Object
+	
 	// Settings
 	FireRateBonus=1.1
 	SocketID=1

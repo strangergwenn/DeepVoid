@@ -14,6 +14,12 @@ class WA_LongCannon extends DVWeaponAddon;
 
 defaultproperties
 {
+	// Mesh
+	Begin Object Name=AddonMesh
+		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_LongCannon'
+		Rotation=(Yaw=0, Pitch=32768, Roll=16384)
+	End Object
+	
 	// Settings
 	PrecisionBonus=2.0
 	SocketID=1
