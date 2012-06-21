@@ -14,8 +14,8 @@ class WA_LongCannon extends DVWeaponAddon;
 
 defaultproperties
 {
-	//TODO
-	
+	// Settings
+	PrecisionBonus=2.0
 	SocketID=1
 	IconPath="DV_Spacegear"
 	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'

@@ -14,8 +14,15 @@ class WA_PenetratingAmmo extends DVWeaponAddon;
 
 defaultproperties
 {
-	DamageBonus=1.1
+	// Mesh
+	Begin Object Name=AddonMesh
+		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_Ammo'
+		Rotation=(Yaw=-16384, Pitch=32768, Roll=16384)
+		Scale=0.3
+	End Object
 	
+	// Properties
+	DamageBonus=1.1
 	SocketID=3
 	IconPath="DV_Spacegear"
 	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
