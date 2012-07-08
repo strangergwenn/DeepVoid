@@ -9,9 +9,104 @@ class W_EnergyGun extends W_Rifle;
 
 
 /*----------------------------------------------------------
-	Properties
+	Public attributes
 ----------------------------------------------------------*/
 
+var (DVEG) const ParticleSystem		PlasmaDischargeTemplate;
+
+var (DVEG) const SoundCue			SpinupSound;
+var (DVEG) const SoundCue			ReadySound;
+
+var (DVEG) const float 				SpinupTime;
+
+
+/*----------------------------------------------------------
+	Private attributes
+----------------------------------------------------------*/
+
+var ParticleSystemComponent			PlasmaDischarge;
+
+var bool							bReadyToFire;
+var bool							bSpinningUp;
+
+
+/*----------------------------------------------------------
+	Firing management
+----------------------------------------------------------*/
+
+/*--- Launch spinup ---*/
+simulated function BeginFire(byte FireModeNum)
+{
+	if (FireModeNum == 1 || bReadyToFire)
+	{
+		super.BeginFire(FireModeNum);
+	}
+	
+	if (FireModeNum == 0 && !bSpinningUp)
+	{
+		SetTimer(SpinupTime, false, 'SpinnedUp');
+		bSpinningUp = true;
+	
+		if (SpinupSound != None)
+		{
+			PlaySound(SpinupSound, false, true, false, Owner.Location);
+		}
+	}
+}
+
+
+/*--- Weapon ready ---*/
+simulated function SpinnedUp()
+{
+	if (ReadySound != None)
+	{
+		PlaySound(ReadySound, false, true, false, Owner.Location);
+	}
+	
+	bReadyToFire = true;
+	BeginFire(0);
+}
+
+
+/*--- Fire ended ---*/
+simulated function StopFire(byte FireModeNum)
+{
+	bSpinningUp = false;
+	bReadyToFire = false;
+	ClearTimer('SpinnedUp');
+	
+	super.StopFire(FireModeNum);
+}
+
+
+/*----------------------------------------------------------
+	Firing effect
+----------------------------------------------------------*/
+
+/*--- Weapon attachment ---*/
+simulated function AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name SocketName)
+{
+	super.AttachWeaponTo(MeshCpnt, SocketName);
+	
+	// Plasma discharge
+	PlasmaDischarge = new(Outer) class'ParticleSystemComponent';
+	PlasmaDischarge.bAutoActivate = false;
+	PlasmaDischarge.SetTemplate(PlasmaDischargeTemplate);
+	SkeletalMeshComponent(Mesh).AttachComponentToSocket(PlasmaDischarge, EffectSockets[0]);
+}
+
+
+/*--- Impact effects ---*/
+simulated function PlayImpactEffects(vector HitLocation)
+{
+	PlasmaDischarge.ActivateSystem();
+	PlasmaDischarge.SetVectorParameter('ShockBeamEnd', HitLocation);
+}
+
+
+/*----------------------------------------------------------
+	Properties
+----------------------------------------------------------*/
 defaultproperties
 {
 	// Settings
