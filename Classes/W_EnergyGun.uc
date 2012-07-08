@@ -114,6 +114,11 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Sniper'
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_SniperShot'
 	
+	// Plasma
+	SpinupSound=SoundCue'DV_Sound.Weapons.A_Empty'
+	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
+	PlasmaDischargeTemplate=ParticleSystem'WP_ShockRifle.Particles.P_WP_ShockRifle_Beam'
+	
 	// Weaponry
 	InstantHitMomentum(0)=40000.0
 	InstantHitDamage(0)=40.0

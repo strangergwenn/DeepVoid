@@ -26,4 +26,13 @@ defaultproperties
 	DefaultWeaponList(2)=class'W_Shotgun'
 	DefaultWeaponList(3)=class'W_EnergyGun'
 	DefaultWeaponList(4)=class'W_GrenadeLauncher'
+	
+	DefaultAddonList(0)=class'WA_HeavyAmmo'
+	DefaultAddonList(1)=class'WA_LargeCapacity'
+	DefaultAddonList(2)=class'WA_LaserBeam'
+	DefaultAddonList(3)=class'WA_LongCannon'
+	DefaultAddonList(4)=class'WA_PenetratingAmmo'
+	DefaultAddonList(5)=class'WA_RapidFire'
+	DefaultAddonList(6)=class'WA_RedDot'
+	DefaultAddonList(6)=class'WA_SniperSight'
 }
