@@ -34,5 +34,5 @@ defaultproperties
 	DefaultAddonList(4)=class'WA_PenetratingAmmo'
 	DefaultAddonList(5)=class'WA_RapidFire'
 	DefaultAddonList(6)=class'WA_RedDot'
-	DefaultAddonList(6)=class'WA_SniperSight'
+	DefaultAddonList(7)=class'WA_SniperSight'
 }
