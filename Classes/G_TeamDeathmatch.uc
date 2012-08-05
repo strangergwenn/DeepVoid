@@ -15,6 +15,7 @@ class G_TeamDeathmatch extends DVGame;
 defaultproperties
 {
 	MaxScore=50
+	PointsForKill=1
 	RestartTimer=10.0
 	SpawnProtectTime=5.0
 	DefaultPawnClass=class'P_Pawn'
