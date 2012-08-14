@@ -21,7 +21,7 @@ defaultproperties
 	Mesh=WeaponMesh
 	
 	// Settings
-	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_ShotgunShot'
+	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_GrenadeLauncherShot'
 	WeaponEmptySound=SoundCue'DV_Sound.Weapons.A_Empty'
 	ZoomOffset=(X=1.50000,Y=23.000000,Z=0.000000)
 	ZoomSensitivity=0.8

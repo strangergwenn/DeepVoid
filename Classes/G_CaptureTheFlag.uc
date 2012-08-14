@@ -20,7 +20,7 @@ function FlagTaken(byte FlagTeamNumber)
 	local DVPlayerController P;
 	foreach AllActors(class'DVPlayerController', P)
 	{
-		P.ServerNotifyFlagState(0, FlagTeamNumber);
+		P_Pawn(P.Pawn).ServerNotifyFlagState(0, FlagTeamNumber);
 	}
 	`log("DVCTF > FlagTaken");
 }
@@ -32,7 +32,7 @@ function FlagDropped(byte FlagTeamNumber)
 	local DVPlayerController P;
 	foreach AllActors(class'DVPlayerController', P)
 	{
-		P.ServerNotifyFlagState(1, FlagTeamNumber);
+		P_Pawn(P.Pawn).ServerNotifyFlagState(1, FlagTeamNumber);
 	}
 	`log("DVCTF > FlagDropped");
 }
@@ -44,7 +44,7 @@ function FlagReturned(byte FlagTeamNumber)
 	local DVPlayerController P;
 	foreach AllActors(class'DVPlayerController', P)
 	{
-		P.ServerNotifyFlagState(2, FlagTeamNumber);
+		P_Pawn(P.Pawn).ServerNotifyFlagState(2, FlagTeamNumber);
 	}
 	`log("DVCTF > FlagReturned");
 }
@@ -56,7 +56,7 @@ function FlagCaptured(byte FlagTeamNumber)
 	local DVPlayerController P;
 	foreach AllActors(class'DVPlayerController', P)
 	{
-		P.ServerNotifyFlagState(2, FlagTeamNumber);
+		P_Pawn(P.Pawn).ServerNotifyFlagState(2, FlagTeamNumber);
 	}
 	Teams[((FlagTeamNumber == 1) ? 0:1)].AddKill(false, 1);
 	`log("DVCTF > FlagCaptured");

@@ -112,7 +112,7 @@ defaultproperties
 	// Settings
 	WeaponIconPath="DV_Spacegear"
 	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Sniper'
-	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_SniperShot'
+	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma
 	SpinupSound=SoundCue'DV_Sound.Weapons.A_Empty'

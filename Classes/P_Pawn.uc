@@ -9,6 +9,51 @@ class P_Pawn extends DVPawn;
 
 
 /*----------------------------------------------------------
+	Localized attributes
+----------------------------------------------------------*/
+
+var (DVPC) localized string			lRedFlagTaken;
+var (DVPC) localized string			lBlueFlagTaken;
+var (DVPC) localized string			lRedFlagDropped;
+var (DVPC) localized string			lBlueFlagDropped;
+var (DVPC) localized string			lRedFlagReturned;
+var (DVPC) localized string			lBlueFlagReturned;
+var (DVPC) localized string			lRedFlagCaptured;
+var (DVPC) localized string			lBlueFlagCaptured;
+
+
+/*----------------------------------------------------------
+	Notifications
+----------------------------------------------------------*/
+
+/*--- Server flag state event ---*/
+reliable server function ServerNotifyFlagState(int FlagState, byte TeamNumber)
+{
+	NotifyFlagState(FlagState, TeamNumber);
+}
+
+/*--- Client flag status - 0 : taken, 1 : dropped, 2 : returned, 3 : captured ---*/
+reliable client simulated function NotifyFlagState(int FlagState, byte TeamNumber)
+{
+	local string message;
+	
+	switch (FlagState)
+	{
+		case 0:
+			message = (TeamNumber == 0) ? lRedFlagTaken : lBlueFlagTaken;
+		case 1:
+			message = (TeamNumber == 0) ? lRedFlagDropped : lBlueFlagDropped;
+		case 2:
+			message = (TeamNumber == 0) ? lRedFlagReturned : lBlueFlagReturned;
+		case 3:
+			message = (TeamNumber == 0) ? lRedFlagCaptured : lBlueFlagCaptured;
+	}
+	
+	DVPlayerController(Controller).ShowGenericMessage(message);
+}
+
+
+/*----------------------------------------------------------
 	Properties
 ----------------------------------------------------------*/
 
@@ -45,6 +90,7 @@ defaultproperties
 	// External data
 	ModuleName="DeepVoid"
 	FootStepSound=SoundCue'DV_Sound.Gameplay.A_Walk'
+	JumpSound=SoundCue'DV_Sound.Gameplay.A_Jump'
 	HitSound=SoundCue'DV_Sound.Impacts.A_Impact_Player'
 	TeamMaterials[0]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Red'
 	TeamMaterials[1]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Blue'

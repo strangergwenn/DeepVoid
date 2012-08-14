@@ -16,7 +16,7 @@ defaultproperties
 {
 	ProjFlightTemplate=ParticleSystem'VH_Manta.Effects.PS_Manta_Projectile'
 	ProjExplosionTemplate=ParticleSystem'WP_ShockRifle.Particles.P_WP_ShockRifle_Beam_Impact'
-	ExplosionSound=SoundCue'DV_Sound.Impacts.A_Impact_Shotgun'
+	ExplosionSound=SoundCue'DV_Sound.Impacts.A_Impact_Plasma'
     MyDamageType=class'DamageType'
 	
     bCollideWorld=true
