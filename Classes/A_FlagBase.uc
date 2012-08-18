@@ -28,8 +28,9 @@ var (Flag) const byte 			TeamIndex;
 var StaticMeshComponent			Mesh;
 
 var DVPlayerController			PC;
-
 var DVPawn						OldPawn;
+
+var A_Flag						OwnedFlag;
 
 var float 						CurrentPeriod;
 
@@ -45,15 +46,46 @@ replication
 	Methods
 ----------------------------------------------------------*/
 
+/*--- Game startup ---*/
+simulated function PostBeginPlay()
+{
+	super.PostBeginPlay();
+	SpawnFlag();
+}
+
+
+/*--- (Re)spawn the flag ---*/
+simulated function SpawnFlag()
+{
+	if (Role >= ROLE_Authority && G_CaptureTheFlag(WorldInfo.Game) != None)
+	{
+		OwnedFlag = Spawn(class'A_Flag', self);
+		OwnedFlag.SetFlagData(TeamIndex, self);
+	}
+}
+
+
+/*--- The flag was returned ---*/
+simulated function FlagReturned()
+{
+	if (WorldInfo.NetMode == NM_DedicatedServer)
+		G_CaptureTheFlag(WorldInfo.Game).FlagReturned(TeamIndex);
+	SpawnFlag();
+}
+
+
 /*--- Detection tick ---*/
 simulated function Tick(float DeltaTime)
 {
 	local DVPawn P;
+	local A_Flag F;
 	CurrentPeriod -= DeltaTime;
 	
 	if (CurrentPeriod <= 0)
 	{
 		CurrentPeriod = DetectionPeriod;
+		
+		// Flag take
 		foreach AllActors(class'DVPawn', P)
 		{
 			if (VSize(P.Location - Location) < DetectionDistance && P != OldPawn)
@@ -61,6 +93,19 @@ simulated function Tick(float DeltaTime)
 				OldPawn = P;
 				if (WorldInfo.NetMode == NM_DedicatedServer)
 					G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
+				// Todo : attach to player
+			}
+		}
+		
+		// Flag capture
+		foreach AllActors(class'A_Flag', F)
+		{
+			if (VSize(F.Location - Location) < DetectionDistance && F.HomeBase != self)
+			{
+				if (WorldInfo.NetMode == NM_DedicatedServer)
+					G_CaptureTheFlag(WorldInfo.Game).FlagCaptured(F.TeamIndex);
+				F.Destroy();
+				SpawnFlag();
 			}
 		}
 	}

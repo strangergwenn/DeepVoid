@@ -13,13 +13,66 @@ class A_Flag extends UDKCarriedObject
 	Public attributes
 ----------------------------------------------------------*/
 
+var (Flag) const color					RedTeamColor;
+var (Flag) const color					BlueTeamColor;
+
+
 /*----------------------------------------------------------
 	Private attributes
 ----------------------------------------------------------*/
 
+var PointLightComponent 				FlagLight;
+
+var byte 								TeamIndex;
+
+var bool								bIsReturnable;
+
+
 /*----------------------------------------------------------
 	Methods
 ----------------------------------------------------------*/
+
+/*--- Set the flag data ---*/
+simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
+{
+	TeamIndex = Index;
+	HomeBase = FlagParent;
+	
+	FlagLight.SetLightProperties(
+		FlagLight.Brightness,
+		(TeamIndex == 0) ? RedTeamColor : BlueTeamColor
+	);
+}
+
+
+/*--- Return the flag or retake it ---*/
+event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vector HitNormal)
+{
+	// Friendly touch : return
+	if (TeamIndex != DVPlayerRepInfo(DVPawn(Other).PlayerReplicationInfo).Team.TeamIndex)
+	{
+		A_FlagBase(HomeBase).FlagReturned();
+		bIsReturnable = false;
+		Destroy();
+	}
+	
+	// Or... Retake
+	else
+	{
+		bIsReturnable = false;
+		//TODO : attach to player, trigger sound
+	}
+}
+
+
+/*--- Drop the flag ---*/
+function Drop(optional Controller Killer)
+{
+	// TODO : trigger this serverside
+	// TODO : trigger sound
+	bIsReturnable = true;
+}
+
 
 /*----------------------------------------------------------
 	Properties
@@ -34,51 +87,63 @@ defaultProperties
 	NetPriority=+00003.000000
 	
 	// Gameplay
-	bHome=True
-	bStatic=False
+	bHome=true
+	bStatic=false
+ 	bHardAttach=true
 	bCollideActors=true
+	bIsReturnable=false
+	RedTeamColor=(R=200,G=20,B=20)
+	BlueTeamColor=(R=20,G=20,B=200)
 
+	// Collisions
 	Begin Object Class=CylinderComponent Name=CollisionCylinder
 		CollisionRadius=+0048.000000
 		CollisionHeight=+0085.000000
 		CollideActors=true
 	End Object
 
+	// Ambient light
 	Begin Object class=PointLightComponent name=FlagLightComponent
 		Brightness=5.0
-		LightColor=(R=255,G=255,B=255)
+		LightColor=(R=255,G=64,B=0)
 		Radius=250.0
 		CastShadows=false
 		bEnabled=true
-		LightingChannels=(Dynamic=FALSE,CompositeDynamic=FALSE)
+		LightingChannels=(Dynamic=false,CompositeDynamic=false)
 	End Object
+	FlagLight=FlagLightComponent
 	Components.Add(FlagLightComponent)
 
+	// Lighting
 	Begin Object Class=DynamicLightEnvironmentComponent Name=FlagLightEnvironment
-	    bDynamic=FALSE
+	    bDynamic=false
 	End Object
 	Components.Add(FlagLightEnvironment)
 
+	// Mesh
 	Begin Object Class=SkeletalMeshComponent Name=TheFlagSkelMesh
-		CollideActors=false
-		BlockActors=false
 		PhysicsWeight=0
-		bHasPhysicsAssetInstance=true
+		BlockActors=false
+		CollideActors=false
 		BlockRigidBody=true
 		RBChannel=RBCC_Nothing
-		RBCollideWithChannels=(Default=FALSE,GameplayPhysics=FALSE,EffectPhysics=FALSE,Cloth=TRUE)
+		bHasPhysicsAssetInstance=true
+		RBCollideWithChannels=(Default=false,GameplayPhysics=false,EffectPhysics=false,Cloth=true)
+		
 		ClothRBChannel=RBCC_Cloth
-		LightEnvironment=FlagLightEnvironment
+		ClothWind=(X=20.0,Y=10.0)
 		bEnableClothSimulation=true
 		bAutoFreezeClothWhenNotRendered=true
-		bUpdateSkelWhenNotRendered=false
-		bAcceptsDynamicDecals=FALSE
-		ClothWind=(X=20.0,Y=10.0)
-		Translation=(X=0.0,Y=0.0,Z=-40.0)  // this is needed to make the flag line up with the flag base
+		
 		bPerBoneMotionBlur=true
+		bAcceptsDynamicDecals=false
+		bUpdateSkelWhenNotRendered=false
+		Translation=(X=0.0,Y=0.0,Z=-40.0)
+		LightEnvironment=FlagLightEnvironment
+		SkeletalMesh=SkeletalMesh'CTF_Flag_IronGuard.Mesh.S_CTF_Flag_IronGuard'
+		PhysicsAsset=PhysicsAsset'CTF_Flag_IronGuard.Mesh.S_CTF_Flag_IronGuard_Physics'
+		
 	End Object
 	SkelMesh=TheFlagSkelMesh;
 	Components.Add(TheFlagSkelMesh)
-
- 	bHardAttach=true
 }
