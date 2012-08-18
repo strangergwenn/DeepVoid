@@ -27,6 +27,12 @@ var byte 								TeamIndex;
 
 var bool								bIsReturnable;
 
+replication
+{
+	if ( (Role==ROLE_Authority) && bNetDirty )
+		TeamIndex, bIsReturnable;
+}
+
 
 /*----------------------------------------------------------
 	Methods
@@ -66,10 +72,8 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 
 
 /*--- Drop the flag ---*/
-function Drop(optional Controller Killer)
+reliable server simulated function Drop(Controller OldOwner)
 {
-	// TODO : trigger this serverside
-	// TODO : trigger sound
 	bIsReturnable = true;
 }
 

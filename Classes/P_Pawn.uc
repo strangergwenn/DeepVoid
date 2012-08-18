@@ -23,6 +23,13 @@ var (DVPC) localized string			lBlueFlagCaptured;
 
 
 /*----------------------------------------------------------
+	Private attributes
+----------------------------------------------------------*/
+
+var A_Flag							EnemyFlag;
+
+
+/*----------------------------------------------------------
 	Notifications
 ----------------------------------------------------------*/
 
@@ -54,6 +61,28 @@ reliable client simulated function NotifyFlagState(int FlagState, byte TeamNumbe
 	}
 	
 	DVPlayerController(Controller).ShowGenericMessage(message);
+}
+
+
+/*----------------------------------------------------------
+	States
+----------------------------------------------------------*/
+
+/*--- Just before dying ---*/
+simulated State Dying
+{
+	/*-- Flag drop ---*/
+	simulated function BeginState(Name PreviousStateName)
+	{
+		super.BeginState(PreviousStateName);
+		if (EnemyFlag != None && WorldInfo.NetMode == NM_DedicatedServer)
+		{
+			EnemyFlag.Drop(Controller);
+			//TODO : detach flag
+			if (WorldInfo.NetMode == NM_DedicatedServer)
+				G_CaptureTheFlag(WorldInfo.Game).FlagTaken(EnemyFlag.TeamIndex);
+		}
+	}
 }
 
 

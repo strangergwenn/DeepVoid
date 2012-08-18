@@ -34,7 +34,6 @@ var A_Flag						OwnedFlag;
 
 var float 						CurrentPeriod;
 
-
 replication
 {
 	if ( (Role==ROLE_Authority) && bNetDirty )
