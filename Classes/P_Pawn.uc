@@ -41,12 +41,16 @@ reliable client simulated function NotifyFlagState(int FlagState, byte TeamNumbe
 	{
 		case 0:
 			message = (TeamNumber == 0) ? lRedFlagTaken : lBlueFlagTaken;
+			break;
 		case 1:
 			message = (TeamNumber == 0) ? lRedFlagDropped : lBlueFlagDropped;
+			break;
 		case 2:
 			message = (TeamNumber == 0) ? lRedFlagReturned : lBlueFlagReturned;
+			break;
 		case 3:
 			message = (TeamNumber == 0) ? lRedFlagCaptured : lBlueFlagCaptured;
+			break;
 	}
 	
 	DVPlayerController(Controller).ShowGenericMessage(message);

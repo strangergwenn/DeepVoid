@@ -15,51 +15,46 @@ class G_CaptureTheFlag extends G_TeamDeathmatch;
 
 
 /*--- The flag was taken : advertise that to everyone ---*/
-function FlagTaken(byte FlagTeamNumber)
+function FlagTaken (byte FlagTeamNumber)
 {
-	local DVPlayerController P;
-	foreach AllActors(class'DVPlayerController', P)
-	{
-		P_Pawn(P.Pawn).ServerNotifyFlagState(0, FlagTeamNumber);
-	}
-	`log("DVCTF > FlagTaken");
+	NotifyAllPawns(0, FlagTeamNumber);
+	`log("DVCTF > FlagTaken" @FlagTeamNumber);
 }
 
 
 /*--- The flag was dropped ---*/
-function FlagDropped(byte FlagTeamNumber)
+function FlagDropped (byte FlagTeamNumber)
 {
-	local DVPlayerController P;
-	foreach AllActors(class'DVPlayerController', P)
-	{
-		P_Pawn(P.Pawn).ServerNotifyFlagState(1, FlagTeamNumber);
-	}
-	`log("DVCTF > FlagDropped");
+	NotifyAllPawns(1, FlagTeamNumber);
+	`log("DVCTF > FlagDropped" @FlagTeamNumber);
 }
 
 
 /*--- The flag was returned ---*/
-function FlagReturned(byte FlagTeamNumber)
+function FlagReturned (byte FlagTeamNumber)
 {
-	local DVPlayerController P;
-	foreach AllActors(class'DVPlayerController', P)
-	{
-		P_Pawn(P.Pawn).ServerNotifyFlagState(2, FlagTeamNumber);
-	}
-	`log("DVCTF > FlagReturned");
+	NotifyAllPawns(2, FlagTeamNumber);
+	`log("DVCTF > FlagReturned" @FlagTeamNumber);
 }
 
 
 /*--- The flag was captured ---*/
-function FlagCaptured(byte FlagTeamNumber)
+function FlagCaptured (byte FlagTeamNumber)
+{
+	NotifyAllPawns(3, FlagTeamNumber);
+	Teams[((FlagTeamNumber == 1) ? 0:1)].AddKill(false, 1);
+	`log("DVCTF > FlagCaptured" @FlagTeamNumber);
+}
+
+
+/*--- Gneric event ---*/
+function NotifyAllPawns (byte PawnEvent, byte Param)
 {
 	local DVPlayerController P;
 	foreach AllActors(class'DVPlayerController', P)
 	{
-		P_Pawn(P.Pawn).ServerNotifyFlagState(2, FlagTeamNumber);
+		P_Pawn(P.Pawn).ServerNotifyFlagState(PawnEvent, Param);
 	}
-	Teams[((FlagTeamNumber == 1) ? 0:1)].AddKill(false, 1);
-	`log("DVCTF > FlagCaptured");
 }
 
 

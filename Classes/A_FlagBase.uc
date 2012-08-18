@@ -5,7 +5,7 @@
  *  @author Gwennaël ARBONA
  **/
 
-class A_FlagBase extends Actor
+class A_FlagBase extends UDKGameObjective
 	placeable
 	ClassGroup(DeepVoid)
 	hidecategories(Collision, Physics);
@@ -34,6 +34,13 @@ var DVPawn						OldPawn;
 var float 						CurrentPeriod;
 
 
+replication
+{
+	if ( (Role==ROLE_Authority) && bNetDirty )
+		TeamIndex, Mesh;
+}
+
+
 /*----------------------------------------------------------
 	Methods
 ----------------------------------------------------------*/
@@ -52,7 +59,6 @@ simulated function Tick(float DeltaTime)
 			if (VSize(P.Location - Location) < DetectionDistance && P != OldPawn)
 			{
 				OldPawn = P;
-				
 				if (WorldInfo.NetMode == NM_DedicatedServer)
 					G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
 			}
@@ -75,15 +81,25 @@ defaultProperties
 	Components.Add(MyLightEnvironment)
 	
 	// Mesh
-	Begin Object class=StaticMeshComponent name=GroundBase
-		Scale=0.7
+	Begin Object class=StaticMeshComponent name=GroundBase		
 		BlockActors=true
-		BlockZeroExtent=true
-		BlockRigidBody=true
-		BlockNonzeroExtent=true
 		CollideActors=true
+		BlockRigidBody=true
+		BlockZeroExtent=true
+		BlockNonzeroExtent=true
+		
+		CastShadow=false
+		bAcceptsLights=true
+		bCastDynamicShadow=false
+		bForceDirectLightMap=true
 		LightEnvironment=MyLightEnvironment
+		
+		Scale=0.7
+		Translation=(Z=-48)
+		AlwaysLoadOnClient=true
+		AlwaysLoadOnServer=true
 		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_FlagBase'
+		
 	End Object
 	CollisionComponent=GroundBase
 	Components.Add(GroundBase)
@@ -92,6 +108,14 @@ defaultProperties
  	// Gameplay
 	DetectionPeriod=0.25
 	DetectionDistance=200.0
+	
+	// Networking
+	bStatic=false
+	bHidden=false
+	bAlwaysRelevant=true
+	bTickIsDisabled=false
+	NetUpdateFrequency=1
+	RemoteRole=ROLE_SimulatedProxy
 	
  	// Mesh settings
 	bEdShouldSnap=true
