@@ -34,10 +34,12 @@ var A_Flag						OwnedFlag;
 
 var float 						CurrentPeriod;
 
+var bool						bHasFlag;
+
 replication
 {
 	if ( (Role==ROLE_Authority) && bNetDirty )
-		TeamIndex, Mesh;
+		TeamIndex, Mesh, bHasFlag, OwnedFlag;
 }
 
 
@@ -60,6 +62,7 @@ simulated function SpawnFlag()
 	{
 		OwnedFlag = Spawn(class'A_Flag', self);
 		OwnedFlag.SetFlagData(TeamIndex, self);
+		bHasFlag = true;
 	}
 }
 
@@ -76,35 +79,45 @@ simulated function FlagReturned()
 /*--- Detection tick ---*/
 simulated function Tick(float DeltaTime)
 {
-	local DVPawn P;
-	local A_Flag F;
+	local P_Pawn P;
 	CurrentPeriod -= DeltaTime;
 	
-	if (CurrentPeriod <= 0)
+	if (CurrentPeriod <= 0 && bHasFlag)
 	{
 		CurrentPeriod = DetectionPeriod;
 		
-		// Flag take
-		foreach AllActors(class'DVPawn', P)
+		foreach AllActors(class'P_Pawn', P)
 		{
 			if (VSize(P.Location - Location) < DetectionDistance && P != OldPawn)
 			{
-				OldPawn = P;
-				if (WorldInfo.NetMode == NM_DedicatedServer)
-					G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
-				// Todo : attach to player
-			}
-		}
-		
-		// Flag capture
-		foreach AllActors(class'A_Flag', F)
-		{
-			if (VSize(F.Location - Location) < DetectionDistance && F.HomeBase != self)
-			{
-				if (WorldInfo.NetMode == NM_DedicatedServer)
-					G_CaptureTheFlag(WorldInfo.Game).FlagCaptured(F.TeamIndex);
-				F.Destroy();
-				SpawnFlag();
+				// Flag take
+				if (TeamIndex != DVPlayerRepInfo(P.PlayerReplicationInfo).Team.TeamIndex)
+				{
+					OldPawn = P;
+					if (WorldInfo.NetMode == NM_DedicatedServer)
+					{
+						G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
+					}
+					`log("AFB > Flag take" @OwnedFlag);
+					P.Mesh.AttachComponentToSocket(OwnedFlag.SkelMesh, 'WeaponPoint');
+					P.EnemyFlag = OwnedFlag;
+					bHasFlag = false;
+				}
+				
+				// Flag capture
+				else if (P.EnemyFlag != None)
+				{
+					if (WorldInfo.NetMode == NM_DedicatedServer)
+					{
+						G_CaptureTheFlag(WorldInfo.Game).FlagCaptured(P.EnemyFlag.TeamIndex);
+					}
+					`log("AFB > Flag capture" @P.EnemyFlag);
+					A_FlagBase(P.EnemyFlag.HomeBase).SpawnFlag();
+					P.Mesh.DetachComponent(P.EnemyFlag.SkelMesh);
+					P.EnemyFlag.Destroy();
+					P.EnemyFlag = None;
+					SpawnFlag();
+				}
 			}
 		}
 	}

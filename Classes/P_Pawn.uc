@@ -28,6 +28,12 @@ var (DVPC) localized string			lBlueFlagCaptured;
 
 var A_Flag							EnemyFlag;
 
+replication
+{
+	if ( (Role==ROLE_Authority) && bNetDirty )
+		EnemyFlag;
+}
+
 
 /*----------------------------------------------------------
 	Notifications
@@ -74,14 +80,16 @@ simulated State Dying
 	/*-- Flag drop ---*/
 	simulated function BeginState(Name PreviousStateName)
 	{
-		super.BeginState(PreviousStateName);
-		if (EnemyFlag != None && WorldInfo.NetMode == NM_DedicatedServer)
+		`log("PP > Dying, BeginState" @self);
+		if (EnemyFlag != None)
 		{
 			EnemyFlag.Drop(Controller);
-			//TODO : detach flag
+			Mesh.DetachComponent(EnemyFlag.SkelMesh);
+			EnemyFlag = None;
 			if (WorldInfo.NetMode == NM_DedicatedServer)
 				G_CaptureTheFlag(WorldInfo.Game).FlagTaken(EnemyFlag.TeamIndex);
 		}
+		super.BeginState(PreviousStateName);
 	}
 }
 

@@ -30,7 +30,7 @@ var bool								bIsReturnable;
 replication
 {
 	if ( (Role==ROLE_Authority) && bNetDirty )
-		TeamIndex, bIsReturnable;
+		TeamIndex, bIsReturnable, FlagLight;
 }
 
 
@@ -54,20 +54,28 @@ simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
 /*--- Return the flag or retake it ---*/
 event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vector HitNormal)
 {
+	// Only player touches
+	if (DVPawn(Other) == None)
+	{
+		return;
+	}
+
 	// Friendly touch : return
-	if (TeamIndex != DVPlayerRepInfo(DVPawn(Other).PlayerReplicationInfo).Team.TeamIndex)
+	if (TeamIndex == DVPlayerRepInfo(DVPawn(Other).PlayerReplicationInfo).Team.TeamIndex)
 	{
 		A_FlagBase(HomeBase).FlagReturned();
-		bIsReturnable = false;
+		`log("AF > Return" @self);
 		Destroy();
 	}
 	
 	// Or... Retake
 	else
 	{
-		bIsReturnable = false;
-		//TODO : attach to player, trigger sound
+		//TODO trigger sound
+		DVPawn(Other).Mesh.AttachComponentToSocket(SkelMesh, 'WeaponPoint');
+		`log("AF > Retake" @self);
 	}
+	bIsReturnable = false;
 }
 
 
@@ -75,6 +83,10 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 reliable server simulated function Drop(Controller OldOwner)
 {
 	bIsReturnable = true;
+	bCollideWorld = true;
+	SetCollision(true, false);
+	SetPhysics(PHYS_Falling);
+	`log("AF > Drop" @self);
 }
 
 
