@@ -29,6 +29,12 @@ var ParticleSystemComponent			PlasmaDischarge;
 var bool							bReadyToFire;
 var bool							bSpinningUp;
 
+replication
+{
+	if (bNetDirty)
+		bReadyToFire, bSpinningUp;
+}
+
 
 /*----------------------------------------------------------
 	Firing management

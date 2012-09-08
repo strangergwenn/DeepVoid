@@ -103,7 +103,7 @@ simulated function Tick(float DeltaTime)
 						G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
 					}
 					`log("AFB > Flag take" @OwnedFlag @self);
-					P.AttachComponent(OwnedFlag.SkelMesh);
+					OwnedFlag.SetBase(P);
 					P.EnemyFlag = OwnedFlag;
 					OwnedFlag.SetHolder(P);
 					bHasFlag = false;
@@ -118,7 +118,7 @@ simulated function Tick(float DeltaTime)
 					}
 					`log("AFB > Flag capture" @P.EnemyFlag @self);
 					A_FlagBase(P.EnemyFlag.HomeBase).SpawnFlag();
-					P.DetachComponent(P.EnemyFlag.SkelMesh);
+					P.EnemyFlag.SetBase(None);
 					P.EnemyFlag.SkelMesh.DetachFromAny();
 					P.EnemyFlag.Destroy();
 					P.EnemyFlag = None;

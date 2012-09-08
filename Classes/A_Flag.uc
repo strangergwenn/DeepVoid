@@ -80,14 +80,26 @@ simulated function SetHolder(P_Pawn NewHolder)
 /*--- Return the flag or retake it ---*/
 event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vector HitNormal)
 {
-	// Only player touches
-	if (DVPawn(Other) == None)
+	local P_Pawn PP;
+	`log("AF > Touch" @self);
+	
+	// Only valid touches are accepted
+	if (P_Pawn(Other) == None)
+		return;
+	PP = P_Pawn(Other);
+	if (PP.PlayerReplicationInfo == None)
 	{
+		`log("AF > No PR for pawn" @self);
+		return;
+	}
+	if (!bIsReturnable)
+	{
+		`log("AF > Not returnable !" @self);
 		return;
 	}
 
 	// Friendly touch : return
-	if (TeamIndex == DVPlayerRepInfo(DVPawn(Other).PlayerReplicationInfo).Team.TeamIndex)
+	if (TeamIndex == DVPlayerRepInfo(PP.PlayerReplicationInfo).Team.TeamIndex)
 	{
 		A_FlagBase(HomeBase).FlagReturned();
 		`log("AF > Return" @self);
@@ -98,32 +110,32 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	else
 	{
 		//TODO trigger sound
-		SetHolder(P_Pawn(Other));
-		DVPawn(Other).Mesh.AttachComponentToSocket(SkelMesh, 'WeaponPoint');
+		SetBase(PP);
+		PP.EnemyFlag = self;
+		SetHolder(PP);
 		`log("AF > Retake" @self);
 	}
 	bIsReturnable = false;
+	bForceNetUpdate = true;
 }
 
 
 /*--- Drop the flag ---*/
-reliable server simulated function Drop(Controller OldOwner)
+simulated function Drop(Controller OldOwner)
 {
 	bIsReturnable = true;
-	bForceNetUpdate = true;
 	bCollideWorld = true;
-	
-	SetCollisionSize(0.75 * DefaultRadius, DefaultHeight);
-	SetCollision(true, false);
+	bForceNetUpdate = true;
 	
 	SetBase(None);
-	SetHardAttach(false);
-	Holder.DetachComponent(SkelMesh);
-	SkelMesh.DetachFromAny();
 	
-	Velocity = 100.0 * VRand();
-	Velocity.Z += 200.0;
+	SetCollisionSize(0.75 * DefaultRadius, DefaultHeight);
+	SetCollisionType(COLLIDE_BlockAll);
+	SetCollision(true, false);
+	
 	SetPhysics(PHYS_Falling);
+	Velocity = 100.0 * VRand();
+	Velocity.Z += 300.0;
 	
 	`log("AF > Drop" @self);
 }
@@ -164,9 +176,10 @@ defaultProperties
 		Brightness=5.0
 		LightColor=(R=255,G=64,B=0)
 		Radius=250.0
-		CastShadows=false
 		bEnabled=true
-		LightingChannels=(Dynamic=false,CompositeDynamic=false)
+		CastShadows=true
+		bRenderLightShafts=true
+		LightingChannels=(Dynamic=true,CompositeDynamic=true)
 	End Object
 	FlagLight=FlagLightComponent
 	Components.Add(FlagLightComponent)
@@ -203,4 +216,5 @@ defaultProperties
 	End Object
 	SkelMesh=TheFlagSkelMesh;
 	Components.Add(TheFlagSkelMesh)
+	CollisionComponent=TheFlagSkelMesh
 }
