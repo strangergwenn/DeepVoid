@@ -32,6 +32,7 @@ var SkeletalMeshComponent		Mesh;
 var float						TimeAlive;
 
 var bool						bAlive;
+var bool						bUp;
 
 
 /*----------------------------------------------------------
@@ -43,10 +44,17 @@ simulated function PostBeginPlay()
 {
 	`log("AT > PostBeginPlay" @self);
 	super.PostBeginPlay();
+	
+	// Registering to master...
 	if (Manager != None)
 	{
 		Manager.RegisterTarget(self);
 	}
+	
+	// Initial shutdown
+	bAlive = true;
+	bUp = true;
+	DeActivateTarget();
 }
 
 
@@ -57,12 +65,13 @@ simulated function ActivateTarget()
 	if (!bAlive)
 	{
 		bAlive = true;
+		bUp = true;
 		
 		if (SoundOnRaise != None)
 			PlaySound(SoundOnRaise);
 		Mesh.PlayAnim('Raise');
 		
-		SetTimer(FRand() * MaxLife, false, 'DeActivateTarget');
+		SetTimer(1 + FRand() * MaxLife, false, 'DeActivateTarget');
 	}
 }
 
@@ -71,15 +80,20 @@ simulated function ActivateTarget()
 simulated function DeActivateTarget()
 {
 	`log("AT > DeActivateTarget" @self);
-	if (bAlive)
+	if (bUp)
 	{
+		ClearTimer('DeActivateTarget');
 		Manager.TargetDown(self, TimeAlive, !bAlive);
+		
 		TimeAlive = 0.0;
 		bAlive = false;
-		
-		if (SoundOnKill != None)
+		bUp = false;
+			
+		if (bAlive && SoundOnKill != None)
+		{
 			PlaySound(SoundOnKill);
-		Mesh.PlayAnim('Lower');
+		}
+		Mesh.PlayAnim('Raise',,false,true,,true);
 	}
 }
 
@@ -88,9 +102,9 @@ simulated function DeActivateTarget()
 simulated function TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum,
 			class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
 {
-	`log("AT > TakeDamage" @self);
 	if (bAlive)
 	{
+		`log("AT > TakeDamage" @self);
 		bAlive = false;
 		DeActivateTarget();
 	}
@@ -138,18 +152,15 @@ defaultproperties
 		BlockRigidBody=true
 		BlockNonzeroExtent=true
 		CollideActors=true
-
-		// Content
-		//SkeletalMesh=SkeletalMesh'Chest.Mesh.SK_Chest'
-		//PhysicsAsset=PhysicsAsset'Chest.Mesh.SK_Chest_Physics'
-		//AnimSets.Add(AnimSet'Chest.Anim.K_Chest')
+		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_target'
+		PhysicsAsset=PhysicsAsset'DV_Spacegear.Mesh.SK_target_Physics'
+		AnimSets.Add(AnimSet'DV_Spacegear.Mesh.K_target')
 	End Object
 	Mesh=MySkeletalMeshComponent
  	Components.Add(MySkeletalMeshComponent)
 	CollisionComponent=MySkeletalMeshComponent
 
 	// Physics
-	Physics=PHYS_RigidBody
 	bEdShouldSnap=true
 	bCollideActors=true
 	bCollideWorld=true

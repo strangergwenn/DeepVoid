@@ -43,7 +43,7 @@ var (TargetControl) localized string	lPoints;
 var ScriptedTexture						CanvasTexture;
 var MaterialInterface 					PanelMaterialTemplate;
 
-var StaticMeshComponent					Mesh;
+var SkeletalMeshComponent				Mesh;
 
 var array<A_Target>						TargetList;
 
@@ -123,18 +123,18 @@ simulated function RaiseTarget()
 	{
 		trg = TargetList[Rand(TargetList.Length)];
 	}
-	until (trg.bAlive);
+	until (!trg.bAlive);
 	trg.ActivateTarget();
 	
 	// Moar !
-	if (TargetsShot < MaxTargetToShoot)
+	if (TargetsShot > MaxTargetToShoot)
 	{
 		AllTargetsShots();
 		ClearTimer('RaiseTarget');
 	}
 	else
 	{
-		SetTimer(FRand() * MaxTargetInterval, false, 'RaiseTarget');
+		SetTimer(1 + FRand() * MaxTargetInterval, false, 'RaiseTarget');
 	}
 }
 
@@ -170,7 +170,7 @@ defaultproperties
 {
 	// Gameplay
 	MaxTargetInterval=2.0
-	MaxTargetToShoot=30
+	MaxTargetToShoot=20
 	TextScale=10.0
 	TextOffsetX=0.0
 	TextOffsetY=0.0
@@ -185,20 +185,21 @@ defaultproperties
 	Components.Add(MyLightEnvironment)
 
 	// Mesh
-	Begin Object class=StaticMeshComponent Name=MyStaticMeshComponent
+	Begin Object class=SkeletalMeshComponent Name=MySkeletalMeshComponent
 		LightEnvironment=MyLightEnvironment
 		BlockActors=true
 		BlockZeroExtent=true
 		BlockRigidBody=true
 		BlockNonzeroExtent=true
 		CollideActors=true
+		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_ConfigBench'
+		PhysicsAsset=PhysicsAsset'DV_Spacegear.Mesh.SK_ConfigBench_Physics'
 	End Object
-	Mesh=MyStaticMeshComponent
- 	Components.Add(MyStaticMeshComponent)
-	CollisionComponent=MyStaticMeshComponent
+	Mesh=MySkeletalMeshComponent
+ 	Components.Add(MySkeletalMeshComponent)
+	CollisionComponent=MySkeletalMeshComponent
 	
 	// Physics
-	Physics=PHYS_RigidBody
 	bEdShouldSnap=true
 	bCollideActors=true
 	bCollideWorld=true
