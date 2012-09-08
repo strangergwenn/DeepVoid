@@ -21,22 +21,41 @@ var (Flag) const color					BlueTeamColor;
 	Private attributes
 ----------------------------------------------------------*/
 
+var P_Pawn								Holder;
+
 var PointLightComponent 				FlagLight;
 
 var byte 								TeamIndex;
 
 var bool								bIsReturnable;
 
+var float								DefaultRadius;
+var float								DefaultHeight;
+
 replication
 {
-	if ( (Role==ROLE_Authority) && bNetDirty )
-		TeamIndex, bIsReturnable, FlagLight;
+	if (bNetDirty)
+		Holder, TeamIndex, bIsReturnable, FlagLight;
 }
 
 
 /*----------------------------------------------------------
 	Methods
 ----------------------------------------------------------*/
+
+/*--- Startup ---*/
+function PostBeginPlay()
+{
+    SetOwner(None);
+    super.PostBeginPlay();
+
+	if (CylinderComponent(CollisionComponent) != None)
+	{
+		DefaultRadius = CylinderComponent(CollisionComponent).CollisionRadius;
+		DefaultHeight = CylinderComponent(CollisionComponent).CollisionHeight;
+	}
+}
+
 
 /*--- Set the flag data ---*/
 simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
@@ -48,6 +67,13 @@ simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
 		FlagLight.Brightness,
 		(TeamIndex == 0) ? RedTeamColor : BlueTeamColor
 	);
+}
+
+
+/*--- Set holder ---*/
+simulated function SetHolder(P_Pawn NewHolder)
+{
+	Holder = NewHolder;
 }
 
 
@@ -72,6 +98,7 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	else
 	{
 		//TODO trigger sound
+		SetHolder(P_Pawn(Other));
 		DVPawn(Other).Mesh.AttachComponentToSocket(SkelMesh, 'WeaponPoint');
 		`log("AF > Retake" @self);
 	}
@@ -83,9 +110,21 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 reliable server simulated function Drop(Controller OldOwner)
 {
 	bIsReturnable = true;
+	bForceNetUpdate = true;
 	bCollideWorld = true;
+	
+	SetCollisionSize(0.75 * DefaultRadius, DefaultHeight);
 	SetCollision(true, false);
+	
+	SetBase(None);
+	SetHardAttach(false);
+	Holder.DetachComponent(SkelMesh);
+	SkelMesh.DetachFromAny();
+	
+	Velocity = 100.0 * VRand();
+	Velocity.Z += 200.0;
 	SetPhysics(PHYS_Falling);
+	
 	`log("AF > Drop" @self);
 }
 
@@ -97,6 +136,8 @@ reliable server simulated function Drop(Controller OldOwner)
 defaultProperties
 {
 	// Networking
+	
+	Physics=PHYS_None
 	RemoteRole=ROLE_SimulatedProxy
 	bReplicateMovement=true
 	bIgnoreRigidBodyPawns=true

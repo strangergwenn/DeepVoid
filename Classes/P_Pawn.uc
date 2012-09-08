@@ -30,7 +30,7 @@ var A_Flag							EnemyFlag;
 
 replication
 {
-	if ( (Role==ROLE_Authority) && bNetDirty )
+	if (bNetDirty)
 		EnemyFlag;
 }
 
@@ -44,6 +44,7 @@ reliable server function ServerNotifyFlagState(int FlagState, byte TeamNumber)
 {
 	NotifyFlagState(FlagState, TeamNumber);
 }
+
 
 /*--- Client flag status - 0 : taken, 1 : dropped, 2 : returned, 3 : captured ---*/
 reliable client simulated function NotifyFlagState(int FlagState, byte TeamNumber)
@@ -83,11 +84,10 @@ simulated State Dying
 		`log("PP > Dying, BeginState" @self);
 		if (EnemyFlag != None)
 		{
-			EnemyFlag.Drop(Controller);
-			Mesh.DetachComponent(EnemyFlag.SkelMesh);
-			EnemyFlag = None;
 			if (WorldInfo.NetMode == NM_DedicatedServer)
-				G_CaptureTheFlag(WorldInfo.Game).FlagTaken(EnemyFlag.TeamIndex);
+				G_CaptureTheFlag(WorldInfo.Game).FlagDropped(EnemyFlag.TeamIndex);
+			EnemyFlag.Drop(Controller);
+			EnemyFlag = None;
 		}
 		super.BeginState(PreviousStateName);
 	}

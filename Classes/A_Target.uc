@@ -17,6 +17,9 @@ class A_Target extends Actor
 
 var (Target) A_TargetManager	Manager;
 
+var (Target) const SoundCue		SoundOnRaise;
+var (Target) const SoundCue		SoundOnKill;
+
 var (Target) const float		MaxLife;
 
 
@@ -55,7 +58,9 @@ simulated function ActivateTarget()
 	{
 		bAlive = true;
 		
-		// TODO ANIM
+		if (SoundOnRaise != None)
+			PlaySound(SoundOnRaise);
+		Mesh.PlayAnim('Raise');
 		
 		SetTimer(FRand() * MaxLife, false, 'DeActivateTarget');
 	}
@@ -72,7 +77,9 @@ simulated function DeActivateTarget()
 		TimeAlive = 0.0;
 		bAlive = false;
 		
-		// TODO ANIM
+		if (SoundOnKill != None)
+			PlaySound(SoundOnKill);
+		Mesh.PlayAnim('Lower');
 	}
 }
 
@@ -108,6 +115,8 @@ defaultproperties
 {
 	// Gameplay
 	MaxLife=3.0
+	SoundOnRaise=SoundCue'DV_Sound.UI.A_Bip'
+	SoundOnKill=SoundCue'DV_Sound.UI.A_Bip'
 	
 	// Light
 	Begin Object class=DynamicLightEnvironmentComponent Name=MyLightEnvironment
@@ -116,16 +125,34 @@ defaultproperties
 	End Object
 	Components.Add(MyLightEnvironment)
 
+	// Animation
+	Begin Object class=AnimNodeSequence Name=MyMeshSequence
+	End Object
+
 	// Mesh
 	Begin Object class=SkeletalMeshComponent Name=MySkeletalMeshComponent
 		LightEnvironment=MyLightEnvironment
+		Animations=MyMeshSequence
+		BlockActors=true
+		BlockZeroExtent=true
+		BlockRigidBody=true
+		BlockNonzeroExtent=true
+		CollideActors=true
+
+		// Content
+		//SkeletalMesh=SkeletalMesh'Chest.Mesh.SK_Chest'
+		//PhysicsAsset=PhysicsAsset'Chest.Mesh.SK_Chest_Physics'
+		//AnimSets.Add(AnimSet'Chest.Anim.K_Chest')
 	End Object
 	Mesh=MySkeletalMeshComponent
  	Components.Add(MySkeletalMeshComponent)
 	CollisionComponent=MySkeletalMeshComponent
 
 	// Physics
+	Physics=PHYS_RigidBody
 	bEdShouldSnap=true
 	bCollideActors=true
+	bCollideWorld=true
 	bBlockActors=true
+	bPathColliding=true
 }

@@ -15,26 +15,49 @@ class A_TargetManager extends Actor
 	Public attributes
 ----------------------------------------------------------*/
 
-var (Target) const float		MaxTargetInterval;
+var (TargetControl) MaterialInstanceConstant PanelMaterial;
 
-var (Target) const int			MaxTargetToShoot;
+var (TargetControl) const Color 		TextColor;
+var (TargetControl) const LinearColor 	ClearColor;
+
+var (TargetControl) const float 		TextScale;
+var (TargetControl) const float			TextOffsetX;
+var (TargetControl) const float			TextOffsetY;
+
+var (TargetControl) const float			MaxTargetInterval;
+
+var (TargetControl) const int			MaxTargetToShoot;
+
+
+/*----------------------------------------------------------
+	Localized attributes
+----------------------------------------------------------*/
+
+var (TargetControl) localized string	lPoints;
 
 
 /*----------------------------------------------------------
 	Private attributes
 ----------------------------------------------------------*/
 
-var SkeletalMeshComponent		Mesh;
+var ScriptedTexture						CanvasTexture;
+var MaterialInterface 					PanelMaterialTemplate;
 
-var array<A_Target>				TargetList;
+var StaticMeshComponent					Mesh;
 
-var float						OverallTime;
+var array<A_Target>						TargetList;
 
-var int							TargetsShot;
+var string				 				PanelText;
+var name 								CanvasTextureParamName;
+
+var float								OverallTime;
+
+var int									TargetsShot;
+var int 								PanelMaterialIndex;
 
 
 /*----------------------------------------------------------
-	Methods
+	Display code
 ----------------------------------------------------------*/
 
 /*--- Initial setup ---*/
@@ -42,8 +65,44 @@ function PostBeginPlay()
 {
 	super.PostBeginPlay();
 	SetTimer(FRand() * MaxTargetInterval, false, 'RaiseTarget');
+	CanvasTexture = ScriptedTexture(class'ScriptedTexture'.static.Create(1024, 1024,, ClearColor));
+	CanvasTexture.Render = OnRender;
+	
+	// Material setup
+	if (PanelMaterialTemplate != None)
+	{
+		PanelMaterial = Mesh.CreateAndSetMaterialInstanceConstant(PanelMaterialIndex);
+		if (PanelMaterial != none)
+		{
+			PanelMaterial.SetParent(PanelMaterialTemplate);
+			if (CanvasTextureParamName != '')
+			{
+				PanelMaterial.SetTextureParameterValue(CanvasTextureParamName, CanvasTexture);
+			}
+		}
+	}
 }
 
+
+/*--- Rendering method ---*/
+function OnRender(Canvas C)
+{		
+	C.SetOrigin(TextOffsetX, TextOffsetY);
+	
+	if (PanelText != "")
+	{
+		C.SetPos(0, 0);
+		C.SetDrawColorStruct(TextColor);
+		C.DrawText("" $ (1.0 / OverallTime) @lPoints,, TextScale, TextScale);
+	}
+	
+	CanvasTexture.bNeedsUpdate = true;
+}
+
+
+/*----------------------------------------------------------
+	Targeting methods
+----------------------------------------------------------*/
 
 /*--- New target is ready to use ---*/
 simulated function RegisterTarget(A_Target trg)
@@ -66,7 +125,6 @@ simulated function RaiseTarget()
 	}
 	until (trg.bAlive);
 	trg.ActivateTarget();
-	// TODO SOUND
 	
 	// Moar !
 	if (TargetsShot < MaxTargetToShoot)
@@ -89,7 +147,6 @@ simulated function TargetDown(A_Target trg, float TimeAlive, bool bWasShot)
 	if (bWasShot)
 	{
 		TargetsShot += 1;
-		// TODO SCORE UPDATE
 	}
 	
 	OverallTime += TimeAlive;
@@ -112,8 +169,13 @@ simulated function AllTargetsShots()
 defaultproperties
 {
 	// Gameplay
-	MaxTargetInterval=1.0
+	MaxTargetInterval=2.0
 	MaxTargetToShoot=30
+	TextScale=10.0
+	TextOffsetX=0.0
+	TextOffsetY=0.0
+	ClearColor=(R=0.0,G=0.0,B=0.0,A=0.0)
+	TextColor=(R=255,G=255,B=255,A=255)
 	
 	// Light
 	Begin Object class=DynamicLightEnvironmentComponent Name=MyLightEnvironment
@@ -123,15 +185,23 @@ defaultproperties
 	Components.Add(MyLightEnvironment)
 
 	// Mesh
-	Begin Object class=SkeletalMeshComponent Name=MySkeletalMeshComponent
+	Begin Object class=StaticMeshComponent Name=MyStaticMeshComponent
 		LightEnvironment=MyLightEnvironment
+		BlockActors=true
+		BlockZeroExtent=true
+		BlockRigidBody=true
+		BlockNonzeroExtent=true
+		CollideActors=true
 	End Object
-	Mesh=MySkeletalMeshComponent
- 	Components.Add(MySkeletalMeshComponent)
-	CollisionComponent=MySkeletalMeshComponent
+	Mesh=MyStaticMeshComponent
+ 	Components.Add(MyStaticMeshComponent)
+	CollisionComponent=MyStaticMeshComponent
 	
 	// Physics
+	Physics=PHYS_RigidBody
 	bEdShouldSnap=true
 	bCollideActors=true
+	bCollideWorld=true
 	bBlockActors=true
+	bPathColliding=true
 }

@@ -27,7 +27,6 @@ var (Flag) const byte 			TeamIndex;
 
 var StaticMeshComponent			Mesh;
 
-var DVPlayerController			PC;
 var DVPawn						OldPawn;
 
 var A_Flag						OwnedFlag;
@@ -38,8 +37,8 @@ var bool						bHasFlag;
 
 replication
 {
-	if ( (Role==ROLE_Authority) && bNetDirty )
-		TeamIndex, Mesh, bHasFlag, OwnedFlag;
+	if (bNetDirty)
+		TeamIndex, Mesh, bHasFlag, OwnedFlag, OldPawn;
 }
 
 
@@ -60,9 +59,11 @@ simulated function SpawnFlag()
 {
 	if (Role >= ROLE_Authority && G_CaptureTheFlag(WorldInfo.Game) != None)
 	{
+		OldPawn = None;
+		bHasFlag = true;
 		OwnedFlag = Spawn(class'A_Flag', self);
 		OwnedFlag.SetFlagData(TeamIndex, self);
-		bHasFlag = true;
+		`log("AFB > Flag spawned" @OwnedFlag @self);
 	}
 }
 
@@ -70,6 +71,7 @@ simulated function SpawnFlag()
 /*--- The flag was returned ---*/
 simulated function FlagReturned()
 {
+	`log("AFB > Flag returned" @self);
 	if (WorldInfo.NetMode == NM_DedicatedServer)
 		G_CaptureTheFlag(WorldInfo.Game).FlagReturned(TeamIndex);
 	SpawnFlag();
@@ -88,8 +90,10 @@ simulated function Tick(float DeltaTime)
 		
 		foreach AllActors(class'P_Pawn', P)
 		{
+			// Detection condition
 			if (VSize(P.Location - Location) < DetectionDistance && P != OldPawn)
 			{
+				
 				// Flag take
 				if (TeamIndex != DVPlayerRepInfo(P.PlayerReplicationInfo).Team.TeamIndex)
 				{
@@ -98,9 +102,10 @@ simulated function Tick(float DeltaTime)
 					{
 						G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
 					}
-					`log("AFB > Flag take" @OwnedFlag);
-					P.Mesh.AttachComponentToSocket(OwnedFlag.SkelMesh, 'WeaponPoint');
+					`log("AFB > Flag take" @OwnedFlag @self);
+					P.AttachComponent(OwnedFlag.SkelMesh);
 					P.EnemyFlag = OwnedFlag;
+					OwnedFlag.SetHolder(P);
 					bHasFlag = false;
 				}
 				
@@ -111,12 +116,12 @@ simulated function Tick(float DeltaTime)
 					{
 						G_CaptureTheFlag(WorldInfo.Game).FlagCaptured(P.EnemyFlag.TeamIndex);
 					}
-					`log("AFB > Flag capture" @P.EnemyFlag);
+					`log("AFB > Flag capture" @P.EnemyFlag @self);
 					A_FlagBase(P.EnemyFlag.HomeBase).SpawnFlag();
-					P.Mesh.DetachComponent(P.EnemyFlag.SkelMesh);
+					P.DetachComponent(P.EnemyFlag.SkelMesh);
+					P.EnemyFlag.SkelMesh.DetachFromAny();
 					P.EnemyFlag.Destroy();
 					P.EnemyFlag = None;
-					SpawnFlag();
 				}
 			}
 		}
