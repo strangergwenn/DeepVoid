@@ -93,7 +93,6 @@ simulated function Tick(float DeltaTime)
 			// Detection condition
 			if (VSize(P.Location - Location) < DetectionDistance && P != OldPawn)
 			{
-				
 				// Flag take
 				if (TeamIndex != DVPlayerRepInfo(P.PlayerReplicationInfo).Team.TeamIndex)
 				{
@@ -103,9 +102,7 @@ simulated function Tick(float DeltaTime)
 						G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
 					}
 					`log("AFB > Flag take" @OwnedFlag @self);
-					OwnedFlag.SetBase(P);
-					P.EnemyFlag = OwnedFlag;
-					OwnedFlag.SetHolder(P);
+					OwnedFlag.AttachFlag(P);
 					bHasFlag = false;
 				}
 				

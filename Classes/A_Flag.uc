@@ -21,7 +21,7 @@ var (Flag) const color					BlueTeamColor;
 	Private attributes
 ----------------------------------------------------------*/
 
-var P_Pawn								Holder;
+var repnotify P_Pawn					Holder;
 
 var repnotify color						LightColor;
 var PointLightComponent 				FlagLight;
@@ -50,6 +50,11 @@ simulated event ReplicatedEvent(name VarName)
 	if (VarName == 'LightColor')
 	{
 		ClientSetFlagData();
+		return;
+	}
+	if (VarName == 'Holder' && Holder != None)
+	{
+		AttachFlag(Holder);
 		return;
 	}
 }
@@ -131,12 +136,24 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	else
 	{
 		//TODO trigger sound
-		SetBase(PP);
-		PP.EnemyFlag = self;
-		SetHolder(PP);
+		AttachFlag(PP);
 		`log("AF > Retake" @self);
 	}
 	bIsReturnable = false;
+	bForceNetUpdate = true;
+}
+
+
+/*--- Get the flag ---*/
+reliable server simulated function AttachFlag(P_Pawn PP)
+{
+	SetBase(PP);
+	PP.EnemyFlag = self;
+	SetHolder(PP);
+	
+	if (WorldInfo.NetMode == NM_DedicatedServer)
+		G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
+		
 	bForceNetUpdate = true;
 }
 
