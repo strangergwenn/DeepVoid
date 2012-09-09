@@ -17,14 +17,15 @@ class A_TargetManager extends Actor
 
 var (TargetControl) MaterialInstanceConstant PanelMaterial;
 
-var (TargetControl) const Color 		TextColor;
-var (TargetControl) const LinearColor 	ClearColor;
-
 var (TargetControl) const float 		TextScale;
 var (TargetControl) const float			TextOffsetX;
 var (TargetControl) const float			TextOffsetY;
 
+var (TargetControl) const float			MinTargetInterval;
 var (TargetControl) const float			MaxTargetInterval;
+var (TargetControl) const float			MinTargetLife;
+var (TargetControl) const float			MaxTargetLife;
+var (TargetControl) const float			ScoreMultiplier;
 
 var (TargetControl) const int			MaxTargetToShoot;
 
@@ -40,10 +41,13 @@ var (TargetControl) localized string	lPoints;
 	Private attributes
 ----------------------------------------------------------*/
 
+var Color 								TextColor;
+var const LinearColor 					ClearColor;
+
 var ScriptedTexture						CanvasTexture;
 var MaterialInterface 					PanelMaterialTemplate;
 
-var SkeletalMeshComponent				Mesh;
+var StaticMeshComponent					Mesh;
 
 var array<A_Target>						TargetList;
 
@@ -54,6 +58,8 @@ var float								OverallTime;
 
 var int									TargetsShot;
 var int 								PanelMaterialIndex;
+
+var bool 								bGameEnded;
 
 
 /*----------------------------------------------------------
@@ -84,18 +90,22 @@ function PostBeginPlay()
 }
 
 
+/*--- Detection tick ---*/
+simulated function Tick(float DeltaTime)
+{
+	PanelText = OverallTime @"s\n";
+	if (bGameEnded)
+		PanelText $= "= " $ round(ScoreMultiplier / OverallTime) @lPoints;
+}
+
+
 /*--- Rendering method ---*/
 function OnRender(Canvas C)
-{		
+{	
 	C.SetOrigin(TextOffsetX, TextOffsetY);
-	
-	if (PanelText != "")
-	{
-		C.SetPos(0, 0);
-		C.SetDrawColorStruct(TextColor);
-		C.DrawText("" $ (1.0 / OverallTime) @lPoints,, TextScale, TextScale);
-	}
-	
+	C.SetPos(0, 0);
+	C.SetDrawColorStruct(TextColor);
+	C.DrawText(PanelText,, TextScale, TextScale);
 	CanvasTexture.bNeedsUpdate = true;
 }
 
@@ -107,6 +117,8 @@ function OnRender(Canvas C)
 /*--- New target is ready to use ---*/
 simulated function RegisterTarget(A_Target trg)
 {
+	trg.MinLife = MinTargetLife;
+	trg.MaxLife = MaxTargetLife;
 	TargetList.AddItem(trg);
 	`log("ATM > RegisterTarget" @trg @self);
 }
@@ -134,7 +146,7 @@ simulated function RaiseTarget()
 	}
 	else
 	{
-		SetTimer(1 + FRand() * MaxTargetInterval, false, 'RaiseTarget');
+		SetTimer(MinTargetInterval + FRand() * MaxTargetInterval, false, 'RaiseTarget');
 	}
 }
 
@@ -157,8 +169,7 @@ simulated function TargetDown(A_Target trg, float TimeAlive, bool bWasShot)
 simulated function AllTargetsShots()
 {
 	`log("ATM > AllTargetsShots in" @OverallTime @self);
-	
-	// TODO END SCORE
+	bGameEnded = true;
 }
 
 
@@ -169,11 +180,20 @@ simulated function AllTargetsShots()
 defaultproperties
 {
 	// Gameplay
-	MaxTargetInterval=2.0
+	ScoreMultiplier=40000
+	MinTargetInterval=0.5
+	MaxTargetInterval=1.5
 	MaxTargetToShoot=20
-	TextScale=10.0
-	TextOffsetX=0.0
-	TextOffsetY=0.0
+	MinTargetLife=0.5
+	MaxTargetLife=3.0
+	OverallTime=0.001
+	
+	// Text
+	PanelMaterialTemplate=Material'DV_Spacegear.Material.M_PanelText'
+	CanvasTextureParamName=CanvasTexture
+	TextScale=4.0
+	TextOffsetX=50.0
+	TextOffsetY=500.0
 	ClearColor=(R=0.0,G=0.0,B=0.0,A=0.0)
 	TextColor=(R=255,G=255,B=255,A=255)
 	
@@ -185,19 +205,18 @@ defaultproperties
 	Components.Add(MyLightEnvironment)
 
 	// Mesh
-	Begin Object class=SkeletalMeshComponent Name=MySkeletalMeshComponent
+	Begin Object class=StaticMeshComponent Name=MyStaticMeshComponent
 		LightEnvironment=MyLightEnvironment
 		BlockActors=true
 		BlockZeroExtent=true
 		BlockRigidBody=true
 		BlockNonzeroExtent=true
 		CollideActors=true
-		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_ConfigBench'
-		PhysicsAsset=PhysicsAsset'DV_Spacegear.Mesh.SK_ConfigBench_Physics'
+		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_TargetManager'
 	End Object
-	Mesh=MySkeletalMeshComponent
- 	Components.Add(MySkeletalMeshComponent)
-	CollisionComponent=MySkeletalMeshComponent
+	Mesh=MyStaticMeshComponent
+ 	Components.Add(MyStaticMeshComponent)
+	CollisionComponent=MyStaticMeshComponent
 	
 	// Physics
 	bEdShouldSnap=true

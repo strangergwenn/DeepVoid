@@ -20,7 +20,8 @@ var (Target) A_TargetManager	Manager;
 var (Target) const SoundCue		SoundOnRaise;
 var (Target) const SoundCue		SoundOnKill;
 
-var (Target) const float		MaxLife;
+var (Target) float				MaxLife;
+var (Target) float				MinLife;
 
 
 /*----------------------------------------------------------
@@ -71,7 +72,7 @@ simulated function ActivateTarget()
 			PlaySound(SoundOnRaise);
 		Mesh.PlayAnim('Raise');
 		
-		SetTimer(1 + FRand() * MaxLife, false, 'DeActivateTarget');
+		SetTimer(MinLife + FRand() * MaxLife, false, 'DeActivateTarget');
 	}
 }
 
@@ -128,6 +129,7 @@ simulated function Tick(float DeltaTime)
 defaultproperties
 {
 	// Gameplay
+	MinLife=0.5
 	MaxLife=3.0
 	SoundOnRaise=SoundCue'DV_Sound.UI.A_Bip'
 	SoundOnKill=SoundCue'DV_Sound.UI.A_Bip'
