@@ -23,6 +23,7 @@ var (Flag) const color					BlueTeamColor;
 
 var P_Pawn								Holder;
 
+var repnotify color						LightColor;
 var PointLightComponent 				FlagLight;
 
 var byte 								TeamIndex;
@@ -32,10 +33,25 @@ var bool								bIsReturnable;
 var float								DefaultRadius;
 var float								DefaultHeight;
 
+
+/*----------------------------------------------------------
+	Replication
+----------------------------------------------------------*/
+
 replication
 {
 	if (bNetDirty)
-		Holder, TeamIndex, bIsReturnable, FlagLight;
+		Holder, TeamIndex, bIsReturnable, LightColor;
+}
+
+simulated event ReplicatedEvent(name VarName)
+{	
+	// Weapon class
+	if (VarName == 'LightColor')
+	{
+		ClientSetFlagData();
+		return;
+	}
 }
 
 
@@ -58,15 +74,20 @@ function PostBeginPlay()
 
 
 /*--- Set the flag data ---*/
-simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
+reliable server simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
 {
 	TeamIndex = Index;
 	HomeBase = FlagParent;
-	
+	LightColor = (TeamIndex == 0) ? RedTeamColor : BlueTeamColor;
+	`log("AF > SetFlagData" @self);
+}
+reliable client simulated function ClientSetFlagData()
+{
 	FlagLight.SetLightProperties(
 		FlagLight.Brightness,
-		(TeamIndex == 0) ? RedTeamColor : BlueTeamColor
+		LightColor
 	);
+	`log("AF > ClientSetFlagData" @self);
 }
 
 
@@ -161,8 +182,8 @@ defaultProperties
  	bHardAttach=true
 	bCollideActors=true
 	bIsReturnable=false
-	RedTeamColor=(R=200,G=20,B=20)
-	BlueTeamColor=(R=20,G=20,B=200)
+	RedTeamColor=(R=200,G=50,B=20)
+	BlueTeamColor=(R=20,G=50,B=200)
 
 	// Collisions
 	Begin Object Class=CylinderComponent Name=CollisionCylinder
@@ -174,8 +195,8 @@ defaultProperties
 	// Ambient light
 	Begin Object class=PointLightComponent name=FlagLightComponent
 		Brightness=5.0
-		LightColor=(R=255,G=64,B=0)
-		Radius=250.0
+		LightColor=(R=10,G=255,B=0)
+		Radius=350.0
 		bEnabled=true
 		CastShadows=true
 		bRenderLightShafts=true
