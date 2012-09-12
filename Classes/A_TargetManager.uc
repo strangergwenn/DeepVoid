@@ -57,6 +57,7 @@ var name 								CanvasTextureParamName;
 var float								OverallTime;
 
 var int									TargetsShot;
+var int									HeadshotCount;
 var int 								PanelMaterialIndex;
 
 var bool 								bGameEnded;
@@ -95,7 +96,15 @@ simulated function Tick(float DeltaTime)
 {
 	PanelText = OverallTime @"s\n";
 	if (bGameEnded)
-		PanelText $= "= " $ round(ScoreMultiplier / OverallTime) @lPoints;
+	{
+		PanelText $= "= ";
+		PanelText $= round(
+			(1 + HeadshotCount / MaxTargetToShoot)
+			* ScoreMultiplier 
+			/ OverallTime
+		);
+		PanelText $= " " $ lPoints;
+	}
 }
 
 
@@ -152,13 +161,18 @@ simulated function RaiseTarget()
 
 
 /*--- Target shot or auto-deactivated ---*/
-simulated function TargetDown(A_Target trg, float TimeAlive, bool bWasShot)
+simulated function TargetDown(A_Target trg, float TimeAlive, bool bWasShot, bool bHeadshot)
 {
 	`log("ATM > TargetKilled" @trg @TimeAlive @self);
 	
 	if (bWasShot)
 	{
 		TargetsShot += 1;
+	}
+	
+	if (bHeadshot)
+	{
+		HeadshotCount += 1;
 	}
 	
 	OverallTime += TimeAlive;

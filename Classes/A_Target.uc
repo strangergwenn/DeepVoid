@@ -17,8 +17,12 @@ class A_Target extends Actor
 
 var (Target) A_TargetManager	Manager;
 
-var (Target) const SoundCue		SoundOnRaise;
-var (Target) const SoundCue		SoundOnKill;
+var (Target) SoundCue			SoundOnHeadshot;
+var (Target) SoundCue			SoundOnRaise;
+var (Target) SoundCue			SoundOnKill;
+
+var (Target) name				HeadshotSocket;
+var (Target) int				HeadshotRadius;
 
 var (Target) float				MaxLife;
 var (Target) float				MinLife;
@@ -32,6 +36,7 @@ var SkeletalMeshComponent		Mesh;
 
 var float						TimeAlive;
 
+var bool						bHeadshot;
 var bool						bAlive;
 var bool						bUp;
 
@@ -84,9 +89,10 @@ simulated function DeActivateTarget()
 	if (bUp)
 	{
 		ClearTimer('DeActivateTarget');
-		Manager.TargetDown(self, TimeAlive, !bAlive);
+		Manager.TargetDown(self, TimeAlive, !bAlive, bHeadshot);
 		
 		TimeAlive = 0.0;
+		bHeadshot = false;
 		bAlive = false;
 		bUp = false;
 			
@@ -103,8 +109,26 @@ simulated function DeActivateTarget()
 simulated function TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum,
 			class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
 {
+	// Data
+	local vector SL;
+	local rotator SR;
+	
+	// Shot
 	if (bAlive)
 	{
+		// Bonus points ?
+		Mesh.GetSocketWorldLocationAndRotation(HeadshotSocket, SL, SR);
+		if (VSize(SL - HitLocation) < HeadshotRadius)
+		{
+			`log("AT > TakeDamage is headshot" @self);
+			if (SoundOnHeadshot != None)
+			{
+				PlaySound(SoundOnHeadshot);
+			}
+			bHeadshot = true;
+		}
+		
+		// Kill management
 		`log("AT > TakeDamage" @self);
 		bAlive = false;
 		DeActivateTarget();
@@ -131,6 +155,9 @@ defaultproperties
 	// Gameplay
 	MinLife=0.5
 	MaxLife=3.0
+	HeadshotRadius=30
+	HeadshotSocket=Head
+	SoundOnHeadshot=SoundCue'DV_Sound.UI.A_Bip'
 	SoundOnRaise=SoundCue'DV_Sound.UI.A_Bip'
 	SoundOnKill=SoundCue'DV_Sound.UI.A_Bip'
 	
