@@ -153,11 +153,11 @@ defaultproperties
 	// Gameplay
 	MinLife=0.5
 	MaxLife=3.0
-	HeadshotRadius=30
+	HeadshotRadius=25
 	HeadshotSocket=Head
-	SoundOnHeadshot=SoundCue'DV_Sound.UI.A_Bip'
-	SoundOnRaise=SoundCue'DV_Sound.UI.A_Bip'
-	SoundOnKill=SoundCue'DV_Sound.UI.A_Bip'
+	SoundOnHeadshot=SoundCue'DV_Ambient.Cibles'
+	SoundOnRaise=SoundCue'DV_Ambient.Cibles'
+	SoundOnKill=SoundCue'DV_Ambient.Cibles'
 	
 	// Light
 	Begin Object class=DynamicLightEnvironmentComponent Name=MyLightEnvironment

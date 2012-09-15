@@ -104,9 +104,10 @@ function PostBeginPlay()
 function StartGame()
 {
 	local DVPlayerController LocalPC;
+	OverallTime = 0.0;
 	TargetsShot = 0;
-	bGameStarted = true;
 	bGameEnded = false;
+	bGameStarted = true;
 
 	// Get a PC	
 	foreach AllActors(class'DVPlayerController', LocalPC)
@@ -152,7 +153,7 @@ simulated function Tick(float DeltaTime)
 		{
 			PanelText $= "\n> ";
 			PanelText $= round(
-				(1 + HeadshotCount / MaxTargetToShoot)
+				(1 + HeadshotCount / MaxTargetToShoot + TargetsShot / ShotsFired)
 				* ScoreMultiplier 
 				/ OverallTime
 			);
