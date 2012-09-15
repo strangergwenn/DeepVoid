@@ -17,6 +17,8 @@ class A_TargetManager extends Actor
 
 var (TargetControl) MaterialInstanceConstant PanelMaterial;
 
+var (TargetControl) DVButton			Trigger;
+
 var (TargetControl) const float 		TextScale;
 var (TargetControl) const float			TextOffsetX;
 var (TargetControl) const float			TextOffsetY;
@@ -35,6 +37,11 @@ var (TargetControl) const int			MaxTargetToShoot;
 ----------------------------------------------------------*/
 
 var (TargetControl) localized string	lPoints;
+var (TargetControl) localized string	lSeconds;
+var (TargetControl) localized string	lKills;
+var (TargetControl) localized string	lShots;
+var (TargetControl) localized string	lHeadshots;
+var (TargetControl) localized string	lPrecision;
 
 
 /*----------------------------------------------------------
@@ -46,20 +53,23 @@ var const LinearColor 					ClearColor;
 
 var ScriptedTexture						CanvasTexture;
 var MaterialInterface 					PanelMaterialTemplate;
-
 var StaticMeshComponent					Mesh;
 
 var array<A_Target>						TargetList;
+var DVPlayerController					PC;
 
 var string				 				PanelText;
 var name 								CanvasTextureParamName;
 
 var float								OverallTime;
 
+var int									ShotsFired;
 var int									TargetsShot;
 var int									HeadshotCount;
+var int									ShotsFiredOnStart;
 var int 								PanelMaterialIndex;
 
+var bool 								bGameStarted;
 var bool 								bGameEnded;
 
 
@@ -71,7 +81,6 @@ var bool 								bGameEnded;
 function PostBeginPlay()
 {
 	super.PostBeginPlay();
-	SetTimer(FRand() * MaxTargetInterval, false, 'RaiseTarget');
 	CanvasTexture = ScriptedTexture(class'ScriptedTexture'.static.Create(1024, 1024,, ClearColor));
 	CanvasTexture.Render = OnRender;
 	
@@ -91,19 +100,64 @@ function PostBeginPlay()
 }
 
 
+/*--- Launch the game ---*/
+function StartGame()
+{
+	local DVPlayerController LocalPC;
+	TargetsShot = 0;
+	bGameStarted = true;
+	bGameEnded = false;
+
+	// Get a PC	
+	foreach AllActors(class'DVPlayerController', LocalPC)
+	{
+		PC = LocalPC;
+		ShotsFiredOnStart = PC.LocalStats.ShotsFired;
+		`log("ATM > Got PC" @PC $"," @ShotsFiredOnStart @"on start");
+	}
+	
+	SetTimer(FRand() * MaxTargetInterval, false, 'RaiseTarget');
+}
+
+
 /*--- Detection tick ---*/
 simulated function Tick(float DeltaTime)
 {
-	PanelText = OverallTime @"s\n";
-	if (bGameEnded)
+	// Startup
+	if (Trigger != None && !bGameStarted)
 	{
-		PanelText $= "= ";
-		PanelText $= round(
-			(1 + HeadshotCount / MaxTargetToShoot)
-			* ScoreMultiplier 
-			/ OverallTime
-		);
-		PanelText $= " " $ lPoints;
+		if (Trigger.bIsActivated)
+		{
+			StartGame();
+		}
+	}
+	
+	// If there is a player... 
+	if (PC != None)
+	{
+		// Shots
+		if (!bGameEnded)
+		{
+			ShotsFired = PC.LocalStats.ShotsFired - ShotsFiredOnStart;
+		}
+		PanelText = TargetsShot @lKills @"-" @ShotsFired @lShots $"\n";
+		PanelText $= round((TargetsShot * 100) / ShotsFired) $"%" @lPrecision $"\n";
+		PanelText $= HeadshotCount @lHeadshots $"\n";
+		
+		// Time
+		PanelText $= OverallTime @lSeconds $"\n";
+		
+		// Score
+		if (bGameEnded)
+		{
+			PanelText $= "\n> ";
+			PanelText $= round(
+				(1 + HeadshotCount / MaxTargetToShoot)
+				* ScoreMultiplier 
+				/ OverallTime
+			);
+			PanelText $= " " $ lPoints;
+		}
 	}
 }
 
@@ -139,22 +193,21 @@ simulated function RaiseTarget()
 	local A_Target trg;
 	`log("ATM > RaiseTarget" @self);
 	
-	// Activate the target
-	do
-	{
-		trg = TargetList[Rand(TargetList.Length)];
-	}
-	until (!trg.bAlive);
-	trg.ActivateTarget();
-	
 	// Moar !
-	if (TargetsShot > MaxTargetToShoot)
+	if (TargetsShot >= MaxTargetToShoot)
 	{
 		AllTargetsShots();
 		ClearTimer('RaiseTarget');
 	}
 	else
 	{
+		// Activate the target
+		do
+		{
+			trg = TargetList[Rand(TargetList.Length)];
+		}
+		until (!trg.bAlive);
+		trg.ActivateTarget();
 		SetTimer(MinTargetInterval + FRand() * MaxTargetInterval, false, 'RaiseTarget');
 	}
 }
@@ -183,7 +236,9 @@ simulated function TargetDown(A_Target trg, float TimeAlive, bool bWasShot, bool
 simulated function AllTargetsShots()
 {
 	`log("ATM > AllTargetsShots in" @OverallTime @self);
+	Trigger.DeActivate();
 	bGameEnded = true;
+	bGameStarted = false;
 }
 
 

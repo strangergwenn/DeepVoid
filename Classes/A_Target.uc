@@ -48,10 +48,8 @@ var bool						bUp;
 /*--- Target registration ---*/
 simulated function PostBeginPlay()
 {
-	`log("AT > PostBeginPlay" @self);
-	super.PostBeginPlay();
-	
 	// Registering to master...
+	super.PostBeginPlay();
 	if (Manager != None)
 	{
 		Manager.RegisterTarget(self);
