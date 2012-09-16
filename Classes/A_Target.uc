@@ -151,8 +151,8 @@ simulated function Tick(float DeltaTime)
 defaultproperties
 {
 	// Gameplay
-	MinLife=0.5
-	MaxLife=3.0
+	MinLife=1.0
+	MaxLife=4.0
 	HeadshotRadius=25
 	HeadshotSocket=Head
 	SoundOnHeadshot=SoundCue'DV_Ambient.Cibles'
