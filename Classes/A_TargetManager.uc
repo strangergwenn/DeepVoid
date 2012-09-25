@@ -106,6 +106,7 @@ function StartGame()
 	local DVPlayerController LocalPC;
 	OverallTime = 0.0;
 	TargetsShot = 0;
+	HeadshotCount = 0;
 	bGameEnded = false;
 	bGameStarted = true;
 
@@ -139,7 +140,7 @@ simulated function Tick(float DeltaTime)
 		// Shots
 		if (!bGameEnded)
 		{
-			ShotsFired = PC.LocalStats.ShotsFired - ShotsFiredOnStart;
+			ShotsFired = PC.GlobalStats.ShotsFired - ShotsFiredOnStart;
 		}
 		PanelText = TargetsShot @lKills @"-" @ShotsFired @lShots $"\n";
 		PanelText $= round((TargetsShot * 100) / ShotsFired) $"%" @lPrecision $"\n";
@@ -184,7 +185,6 @@ simulated function RegisterTarget(A_Target trg)
 	trg.MinLife = MinTargetLife;
 	trg.MaxLife = MaxTargetLife;
 	TargetList.AddItem(trg);
-	`log("ATM > RegisterTarget" @trg @self);
 }
 
 
@@ -192,7 +192,6 @@ simulated function RegisterTarget(A_Target trg)
 simulated function RaiseTarget()
 {
 	local A_Target trg;
-	`log("ATM > RaiseTarget" @self);
 	
 	// Moar !
 	if (TargetsShot >= MaxTargetToShoot)
@@ -216,9 +215,7 @@ simulated function RaiseTarget()
 
 /*--- Target shot or auto-deactivated ---*/
 simulated function TargetDown(A_Target trg, float TimeAlive, bool bWasShot, bool bHeadshot)
-{
-	`log("ATM > TargetKilled" @trg @TimeAlive @self);
-	
+{	
 	if (bWasShot)
 	{
 		TargetsShot += 1;

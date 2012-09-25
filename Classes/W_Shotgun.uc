@@ -62,6 +62,7 @@ defaultproperties
 	// Mesh
 	Begin Object Name=WeaponMesh
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_Rifle'
+		Scale=1.2
 	End Object
 	Mesh=WeaponMesh
 	
