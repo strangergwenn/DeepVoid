@@ -127,6 +127,7 @@ defaultproperties
 	HeadBobbingFactor=0.8
 	RecoilLength=7000.0
 	CrouchHeight=70.0
+	DefaultFOV=100
 	
 	// External data
 	ModuleName="DeepVoid"
