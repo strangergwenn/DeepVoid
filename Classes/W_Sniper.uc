@@ -17,7 +17,7 @@ defaultproperties
 	// Mesh
 	Begin Object Name=WeaponMesh
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_Rifle'
-		Scale=1.2
+		Scale=0.95
 	End Object
 	Mesh=WeaponMesh
 	
@@ -25,7 +25,7 @@ defaultproperties
 	ImpactEffect=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Impact')
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_SniperShot'
 	WeaponEmptySound=SoundCue'DV_Sound.Weapons.A_Empty'
-	ZoomOffset=(X=1.50000,Y=23.000000,Z=0.000000)
+	ZoomOffset=(X=-1.0000,Y=40.000000,Z=0.000000)
 	ZoomSensitivity=0.7
 	ZoomedFOV=45
 	
