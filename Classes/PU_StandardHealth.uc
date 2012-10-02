@@ -37,7 +37,7 @@ defaultproperties
 {
 	Begin Object Name=BaseMeshComp
 		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_StandardAmmo'
-		Translation=(Z=-70)
+		Scale=0.18
 	End Object
 	
 	RespawnTime=5.0
