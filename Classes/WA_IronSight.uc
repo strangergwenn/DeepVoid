@@ -21,12 +21,13 @@ defaultproperties
 	// Mesh
 	Begin Object Name=AddonMesh
 		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_IronSight'
-		Rotation=(Yaw=-16384, Pitch=32768)
+		Rotation=(Pitch=32768, Yaw=-16384, Roll=16384)
+		Translation=(Y=5.2)
 		Scale=0.95
 	End Object
 	
 	// Properties
 	SocketID=2
-	ZoomedFOV=20.0
 	bUseLens=false
+	ZoomOffset=(X=4.00000,Y=30.000000,Z=0.000000)
 }

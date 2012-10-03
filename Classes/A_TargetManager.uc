@@ -142,17 +142,15 @@ simulated function Tick(float DeltaTime)
 		{
 			ShotsFired = PC.GlobalStats.ShotsFired - ShotsFiredOnStart;
 		}
-		PanelText = TargetsShot @lKills @"-" @ShotsFired @lShots $"\n";
-		PanelText $= round((TargetsShot * 100) / ShotsFired) $"%" @lPrecision $"\n";
+		PanelText = TargetsShot @lKills @"-" @ShotsFired @lShots;// @"(";
+		//PanelText $= round((TargetsShot * 100) / ShotsFired) $"%)\n";
 		PanelText $= HeadshotCount @lHeadshots $"\n";
-		
-		// Time
 		PanelText $= OverallTime @lSeconds $"\n";
 		
 		// Score
 		if (bGameEnded)
 		{
-			PanelText $= "\n> ";
+			PanelText $= "        > ";
 			PanelText $= round(
 				(1 + HeadshotCount / MaxTargetToShoot + TargetsShot / ShotsFired)
 				* ScoreMultiplier 
@@ -170,7 +168,7 @@ function OnRender(Canvas C)
 	C.SetOrigin(TextOffsetX, TextOffsetY);
 	C.SetPos(0, 0);
 	C.SetDrawColorStruct(TextColor);
-	C.DrawText(PanelText,, TextScale, TextScale);
+	C.DrawText(Caps(PanelText),, TextScale, TextScale);
 	CanvasTexture.bNeedsUpdate = true;
 }
 
@@ -256,11 +254,11 @@ defaultproperties
 	OverallTime=0.001
 	
 	// Text
-	PanelMaterialTemplate=Material'DV_Spacegear.Material.M_PanelText'
+	PanelMaterialTemplate=Material'DV_Gameplay.Materials.MT_ScreenHolo'
 	CanvasTextureParamName=CanvasTexture
-	TextScale=4.0
-	TextOffsetX=50.0
-	TextOffsetY=500.0
+	TextScale=3.5
+	TextOffsetX=350.0
+	TextOffsetY=100.0
 	ClearColor=(R=0.0,G=0.0,B=0.0,A=0.0)
 	TextColor=(R=255,G=255,B=255,A=255)
 	
@@ -279,7 +277,7 @@ defaultproperties
 		BlockRigidBody=true
 		BlockNonzeroExtent=true
 		CollideActors=true
-		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_TargetManager'
+		StaticMesh=StaticMesh'DV_Gameplay.Mesh.SM_ScreenHolder_Screen'
 	End Object
 	Mesh=MyStaticMeshComponent
  	Components.Add(MyStaticMeshComponent)

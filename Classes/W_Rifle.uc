@@ -25,7 +25,7 @@ defaultproperties
 	ImpactEffect=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Impact')
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_RifleShot'
 	WeaponEmptySound=SoundCue'DV_Sound.Weapons.A_Empty'
-	ZoomOffset=(X=-1.0000,Y=40.000000,Z=0.000000)
+	ZoomOffset=(X=-0.5000,Y=40.000000,Z=0.000000)
 	ZoomSensitivity=0.7
 	ZoomedFOV=45
 	
