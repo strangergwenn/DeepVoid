@@ -5,7 +5,18 @@
  *  @author Gwennaël ARBONA
  **/
 
-class WA_LongCannon extends DVWeaponAddon;
+class WA_Suppressor extends DVWeaponAddon;
+
+
+/*----------------------------------------------------------
+	Properties
+----------------------------------------------------------*/
+
+/*--- Override positionning ---*/
+simulated function name MountSocket()
+{
+	return name("MF");
+}
 
 
 /*----------------------------------------------------------

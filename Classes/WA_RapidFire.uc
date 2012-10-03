@@ -12,6 +12,17 @@ class WA_RapidFire extends DVWeaponAddon;
 	Properties
 ----------------------------------------------------------*/
 
+/*--- Override positionning ---*/
+simulated function name MountSocket()
+{
+	return name("MF");
+}
+
+
+/*----------------------------------------------------------
+	Properties
+----------------------------------------------------------*/
+
 defaultproperties
 {
 	// Mesh
