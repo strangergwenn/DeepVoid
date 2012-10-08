@@ -19,6 +19,9 @@ var (TargetControl) MaterialInstanceConstant PanelMaterial;
 
 var (TargetControl) DVButton			Trigger;
 
+var (TargetControl) SoundCue			SoundOnStart;
+var (TargetControl) SoundCue			SoundOnStop;
+
 var (TargetControl) const float 		TextScale;
 var (TargetControl) const float			TextOffsetX;
 var (TargetControl) const float			TextOffsetY;
@@ -119,6 +122,8 @@ function StartGame()
 	}
 	
 	SetTimer(FRand() * MaxTargetInterval, false, 'RaiseTarget');
+	if (SoundOnStart != None)
+		PlaySound(SoundOnStart);
 }
 
 
@@ -144,7 +149,7 @@ simulated function Tick(float DeltaTime)
 		}
 		PanelText = TargetsShot @lKills @"-" @ShotsFired @lShots;// @"(";
 		//PanelText $= round((TargetsShot * 100) / ShotsFired) $"%)\n";
-		PanelText $= HeadshotCount @lHeadshots $"\n";
+		PanelText $= "\n" $ HeadshotCount @lHeadshots $"\n";
 		PanelText $= OverallTime @lSeconds $"\n";
 		
 		// Score
@@ -235,6 +240,8 @@ simulated function AllTargetsShots()
 	Trigger.DeActivate();
 	bGameEnded = true;
 	bGameStarted = false;
+	if (SoundOnStop != None)
+		PlaySound(SoundOnStop);
 }
 
 
