@@ -260,6 +260,10 @@ defaultproperties
 	MaxTargetLife=3.0
 	OverallTime=0.001
 	
+	// Sound
+	SoundOnStart=SoundCue'DV_Sound.Gameplay.A_AlarmSound'
+	SoundOnStop=SoundCue'DV_Sound.Gameplay.A_AlarmSound'
+	
 	// Text
 	PanelMaterialTemplate=Material'DV_Gameplay.Materials.MT_ScreenHolo'
 	CanvasTextureParamName=CanvasTexture
