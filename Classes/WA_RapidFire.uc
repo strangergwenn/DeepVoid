@@ -27,7 +27,7 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=AddonMesh
-		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_LongCannon_Red'
+		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_LongCannon_Red'
 		Rotation=(Yaw=0, Pitch=32768, Roll=16384)
 	End Object
 	

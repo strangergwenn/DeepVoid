@@ -139,6 +139,14 @@ defaultproperties
 	IconPath="DV_Spacegear"
 	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
 	
+	// Mesh
+	Begin Object Name=AddonMesh
+		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_LaserBeam'
+		Rotation=(Yaw=0, Pitch=32768, Roll=16384)
+		Translation=(X=-2)
+		Scale=1.2
+	End Object
+	
 	// Data
 	SocketID=1
 	bBeamActive=false

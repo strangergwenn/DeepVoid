@@ -20,7 +20,7 @@ defaultproperties
 	
 	// Mesh
 	Begin Object Name=AddonMesh
-		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_IronSight'
+		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_IronSight'
 		Rotation=(Pitch=32768, Yaw=-16384, Roll=16384)
 		Translation=(Y=5.2)
 		Scale=0.95
