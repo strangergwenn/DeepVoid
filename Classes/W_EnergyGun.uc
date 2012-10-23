@@ -102,11 +102,24 @@ simulated function AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name 
 }
 
 
+/*--- Muzzle flash ---*/
+simulated function PlayFiringEffects()
+{
+	if (bReadyToFire)
+	{
+		MuzzleFlashPSC.ActivateSystem();
+	}
+}
+
+
 /*--- Impact effects ---*/
 simulated function PlayImpactEffects(vector HitLocation)
 {
-	PlasmaDischarge.ActivateSystem();
-	PlasmaDischarge.SetVectorParameter('ShockBeamEnd', HitLocation);
+	if (bReadyToFire)
+	{
+		PlasmaDischarge.ActivateSystem();
+		PlasmaDischarge.SetVectorParameter('ShockBeamEnd', HitLocation);
+	}
 }
 
 
