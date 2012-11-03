@@ -29,6 +29,6 @@ defaultproperties
 	// Properties
 	SocketID=2
 	bUseLens=false
-	ZoomedFOV=40.0
+	ZoomedFOV=35.0
 	ZoomOffset=(X=2.4000,Y=25.000000,Z=0.000000)
 }

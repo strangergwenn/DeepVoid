@@ -22,7 +22,7 @@ defaultproperties
 	End Object
 	
 	// Properties
-	DamageBonus=1.1//TODO
+	DamageBonus=1.1
 	SocketID=3
 	IconPath="DV_Spacegear"
 	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'

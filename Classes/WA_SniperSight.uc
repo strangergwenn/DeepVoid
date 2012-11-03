@@ -21,8 +21,9 @@ defaultproperties
 	// Mesh
 	Begin Object Name=AddonMesh
 		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_SniperSight'
-		Rotation=(Yaw=-16384, Pitch=32768, Roll=16384)
-		Scale=0.2
+		Rotation=(Yaw=-16384, Pitch=-16384, Roll=16384)
+		Translation=(X=-5.5, Y=-9.0, Z=0.0)
+		Scale=2.0
 	End Object
 	
 	// Properties
