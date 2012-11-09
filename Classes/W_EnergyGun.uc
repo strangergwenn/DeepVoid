@@ -107,7 +107,8 @@ simulated function PlayFiringEffects()
 {
 	if (bReadyToFire)
 	{
-		MuzzleFlashPSC.ActivateSystem();
+		// Nope.
+		//MuzzleFlashPSC.ActivateSystem();
 	}
 }
 
@@ -134,9 +135,9 @@ defaultproperties
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma
-	SpinupSound=SoundCue'DV_Sound.Weapons.A_Empty'
+	SpinupSound=SoundCue'DV_Sound.Weapons.A_PlasmaSpinup'
 	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
-	PlasmaDischargeTemplate=ParticleSystem'WP_ShockRifle.Particles.P_WP_ShockRifle_Beam'
+	PlasmaDischargeTemplate=ParticleSystem'DV_CoreEffects.FX.PS_PlasmaBeam'
 	
 	// Weaponry
 	InstantHitMomentum(0)=40000.0
