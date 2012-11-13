@@ -17,6 +17,7 @@ defaultproperties
 	// Mesh
 	Begin Object Name=WeaponMesh
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_Rifle'
+		Translation=(X=3.0, Y=-2.0, Z=-0.5)
 		Scale=0.95
 	End Object
 	Mesh=WeaponMesh
@@ -39,7 +40,6 @@ defaultproperties
 	InstantHitDamage(0)=15.0
 	FireInterval(0)=0.10
 	SmoothingFactor=0.9
-	RecoilAngle=300.0
 	Spread(0)=0.15
 	MaxAmmo=75
 }

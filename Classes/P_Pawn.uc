@@ -105,7 +105,7 @@ defaultproperties
 		PhysicsAsset=PhysicsAsset'CH_AnimCorrupt.Mesh.SK_CH_Corrupt_Male_Physics'
 		AnimSets(0)=AnimSet'CH_AnimHuman.Anims.K_AnimHuman_AimOffset'
 		AnimSets(1)=AnimSet'CH_AnimHuman.Anims.K_AnimHuman_BaseMale'
-		AnimTreeTemplate=AnimTree'CH_AnimHuman_Tree.AT_CH_Human'
+		AnimTreeTemplate=AnimTree'DV_Spacegear.Mesh.AT_CH_Human'
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_SpaceSuit'
 	End Object
 	
@@ -125,9 +125,8 @@ defaultproperties
 	// Eyes
 	StandardEyeHeight=50.0
 	HeadBobbingFactor=0.8
-	RecoilLength=7000.0
 	CrouchHeight=70.0
-	DefaultFOV=100
+	DefaultFOV=90
 	
 	// External data
 	ModuleName="DeepVoid"

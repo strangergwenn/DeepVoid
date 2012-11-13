@@ -17,6 +17,7 @@ defaultproperties
 	// Mesh
 	Begin Object Name=WeaponMesh
 		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_Rifle'
+		Translation=(X=3.0, Y=-2.0, Z=-0.5)
 		Scale=0.95
 	End Object
 	Mesh=WeaponMesh
@@ -37,6 +38,5 @@ defaultproperties
 	WeaponProjectiles(0)=class'WP_Grenade'
 	WeaponFireTypes(0)=EWFT_Projectile
 	FireInterval(0)=1.0
-	RecoilAngle=1000.0
 	MaxAmmo=20
 }

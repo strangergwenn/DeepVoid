@@ -144,7 +144,6 @@ defaultproperties
 	InstantHitDamage(0)=40.0
 	FireInterval(0)=0.33
 	SmoothingFactor=1.0
-	RecoilAngle=500.0
 	SpinupTime=1.0
 	Spread(0)=0.0
 	MaxAmmo=50
