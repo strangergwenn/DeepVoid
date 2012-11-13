@@ -27,8 +27,10 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=AddonMesh
-		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_LongCannon_Red'
-		Rotation=(Yaw=0, Pitch=32768, Roll=16384)
+		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_RailVent'
+		Rotation=(Yaw=32768, Pitch=32768, Roll=-16384)
+		Translation=(X=-0.7, Y=0.0, Z=0.5)
+		Scale=0.6
 	End Object
 	
 	// Settings
