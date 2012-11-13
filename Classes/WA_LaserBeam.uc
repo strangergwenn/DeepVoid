@@ -142,9 +142,9 @@ defaultproperties
 	// Mesh
 	Begin Object Name=AddonMesh
 		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_LaserBeam'
-		Rotation=(Yaw=0, Pitch=32768, Roll=16384)
-		Translation=(X=-2)
-		Scale=1.2
+		Rotation=(Yaw=16384, Pitch=-16384, Roll=0)
+		Translation=(X=-20.000000,Y=1.000000,Z=-1.000000)
+		Scale=2.0
 	End Object
 	
 	// Data

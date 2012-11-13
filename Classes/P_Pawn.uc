@@ -126,7 +126,7 @@ defaultproperties
 	StandardEyeHeight=50.0
 	HeadBobbingFactor=0.8
 	CrouchHeight=70.0
-	DefaultFOV=90
+	DefaultFOV=85
 	
 	// External data
 	ModuleName="DeepVoid"

@@ -29,7 +29,7 @@ defaultproperties
 	Begin Object Name=AddonMesh
 		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_Silencer'
 		Rotation=(Yaw=0, Pitch=-16384, Roll=16384)
-		Translation=(X=-36.0, Y=-2.75, Z=0.0)
+		Translation=(X=-35.0, Y=-2.7, Z=0.0)
 		Scale=2.0
 	End Object
 	
