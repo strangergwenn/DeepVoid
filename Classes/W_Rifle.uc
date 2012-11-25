@@ -16,7 +16,7 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=WeaponMesh
-		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_Rifle'
+		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_Rifle'
 		Translation=(X=3.0, Y=-2.0, Z=-0.5)
 		Scale=0.95
 	End Object
@@ -32,8 +32,8 @@ defaultproperties
 	ZoomedFOV=45
 	
 	// Interface
-	WeaponIconPath="DV_Spacegear"
-	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Rifle'
+	WeaponIconPath="DV_Weapons"
+	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Rifle'
 	
 	// Weaponry
 	InstantHitMomentum(0)=10000.0

@@ -130,8 +130,8 @@ simulated function PlayImpactEffects(vector HitLocation)
 defaultproperties
 {
 	// Settings
-	WeaponIconPath="DV_Spacegear"
-	WeaponIcon=Texture2D'DV_Spacegear.Icon.T_W_Sniper'
+	WeaponIconPath="DV_Weapons"
+	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Sniper'
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma

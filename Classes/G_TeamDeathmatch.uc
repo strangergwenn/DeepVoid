@@ -30,7 +30,7 @@ defaultproperties
 	DefaultWeaponList(3)=class'W_EnergyGun'
 	DefaultWeaponList(4)=class'W_GrenadeLauncher'
 	
-	// Order does not affect anything (forbid optimizing out the classes)
+	// Addons (forbid optimizing out the classes)
 	DefaultAddonList(0)=class'WA_HeavyAmmo'
 	DefaultAddonList(1)=class'WA_LargeCapacity'
 	DefaultAddonList(2)=class'WA_LaserBeam'
@@ -40,4 +40,11 @@ defaultproperties
 	DefaultAddonList(6)=class'WA_RedDot'
 	DefaultAddonList(7)=class'WA_SniperSight'
 	DefaultAddonList(8)=class'WA_IronSight'
+	
+	// Icons (forbid optimizing out the classes)
+	DefaultIconList(0)=Material'DV_Weapons.Icon.T_W_Rifle_Mat'
+	DefaultIconList(1)=Material'DV_Weapons.Icon.T_W_Shotgun_Mat'
+	DefaultIconList(2)=Material'DV_Weapons.Icon.T_W_Sniper_Mat'
+	DefaultIconList(3)=Material'DV_Weapons.Icon.T_W_Todo_Mat'
+	DefaultIconList(4)=Material'DV_Addons.Icon.T_W_Todo_Mat'
 }

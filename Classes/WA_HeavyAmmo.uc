@@ -24,6 +24,6 @@ defaultproperties
 	// Settings
 	KineticBonus=10.0
 	SocketID=3
-	IconPath="DV_Spacegear"
-	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
+	IconPath="DV_Addons"
+	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
 }

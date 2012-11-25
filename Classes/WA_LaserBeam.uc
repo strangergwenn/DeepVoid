@@ -136,8 +136,8 @@ simulated function DetachFromWeapon(DVWeapon wp)
 defaultproperties
 {
 	// Interface
-	IconPath="DV_Spacegear"
-	Icon=Texture2D'DV_Spacegear.Icon.T_W_Todo'
+	IconPath="DV_Addons"
+	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
 	
 	// Mesh
 	Begin Object Name=AddonMesh
