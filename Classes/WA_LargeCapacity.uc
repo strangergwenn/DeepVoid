@@ -16,7 +16,7 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=AddonMesh
-		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_Ammo'
+		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_Ammo_Green'
 		Rotation=(Yaw=-16384, Pitch=32768, Roll=16384)
 		Scale=0.3
 	End Object
