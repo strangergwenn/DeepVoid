@@ -9,14 +9,32 @@ class W_GrenadeLauncher extends DVWeapon;
 
 
 /*----------------------------------------------------------
+	Firing
+----------------------------------------------------------*/
+
+/*--- Muzzle flash ---*/
+simulated function PlayFiringEffects()
+{
+	MuzzleFlashPSC.ActivateSystem();
+	SkeletalMeshComponent(Mesh).PlayAnim('Fire',,false,true,,true);
+}
+
+
+/*----------------------------------------------------------
 	Properties
 ----------------------------------------------------------*/
 
 defaultproperties
 {
+	// Animation
+	Begin Object class=AnimNodeSequence Name=MyMeshSequence
+	End Object
+	
 	// Mesh
 	Begin Object Name=WeaponMesh
+		Animations=MyMeshSequence
 		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_GrenadeLauncher'
+		AnimSets.Add(AnimSet'DV_Weapons.Mesh.K_GrenadeLauncher')
 		Translation=(X=4.0, Y=-2.0, Z=2.0)
 		Scale=0.95
 	End Object
