@@ -37,7 +37,7 @@ defaultproperties
 	PrecisionBonus=2.0
 	SocketID=1
 	bSilenced=true
-	bCannonMount=false
+	bRequiresCannonMount=true
 	IconPath="DV_Addons"
 	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
 }

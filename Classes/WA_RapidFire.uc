@@ -36,7 +36,7 @@ defaultproperties
 	// Settings
 	FireRateBonus=1.1
 	SocketID=1
-	bCannonMount=false
+	bRequiresCannonMount=true
 	IconPath="DV_Addons"
 	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
 }

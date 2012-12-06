@@ -29,6 +29,6 @@ defaultproperties
 	// Properties
 	SocketID=2
 	bUseLens=false
-	bLongRail=false
+	bRequiresLongRail=true
 	ZoomOffset=(X=4.00000,Y=30.000000,Z=0.000000)
 }
