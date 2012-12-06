@@ -16,8 +16,8 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=WeaponMesh
-		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_Rifle'
-		Translation=(X=3.0, Y=-2.0, Z=-0.5)
+		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_GrenadeLauncher'
+		Translation=(X=4.0, Y=-2.0, Z=2.0)
 		Scale=0.95
 	End Object
 	Mesh=WeaponMesh
@@ -32,11 +32,13 @@ defaultproperties
 	
 	// Interface
 	WeaponIconPath="DV_Weapons"
-	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Shotgun'
+	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_GrenadeLauncher'
 	
 	// Weaponry
 	WeaponProjectiles(0)=class'WP_Grenade'
 	WeaponFireTypes(0)=EWFT_Projectile
 	FireInterval(0)=1.0
-	MaxAmmo=20
+	MaxAmmo=25
+	bLongRail=false
+	bCannonMount=false
 }

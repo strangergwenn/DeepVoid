@@ -42,4 +42,6 @@ defaultproperties
 	SmoothingFactor=1.0
 	Spread(0)=0.0
 	MaxAmmo=20
+	bLongRail=true
+	bCannonMount=true
 }

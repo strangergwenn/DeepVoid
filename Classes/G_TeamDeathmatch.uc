@@ -41,10 +41,22 @@ defaultproperties
 	DefaultAddonList(7)=class'WA_SniperSight'
 	DefaultAddonList(8)=class'WA_IronSight'
 	
-	// Icons (forbid optimizing out the classes)
+	// Weapon icons (forbid optimizing out the textures)
 	DefaultIconList(0)=Material'DV_Weapons.Icon.T_W_Rifle_Mat'
 	DefaultIconList(1)=Material'DV_Weapons.Icon.T_W_Shotgun_Mat'
 	DefaultIconList(2)=Material'DV_Weapons.Icon.T_W_Sniper_Mat'
-	DefaultIconList(3)=Material'DV_Weapons.Icon.T_W_Todo_Mat'
-	DefaultIconList(4)=Material'DV_Addons.Icon.T_W_Todo_Mat'
+	DefaultIconList(3)=Material'DV_Weapons.Icon.T_W_EnergyGun_Mat'
+	DefaultIconList(4)=Material'DV_Weapons.Icon.T_W_GrenadeLauncher_Mat'
+	DefaultIconList(5)=Material'DV_Weapons.Icon.T_W_Todo_Mat'
+	
+	// Add-on icons (forbid optimizing out the textures)
+	DefaultIconList(6)=Material'DV_Addons.Icon.T_WA_HeavyAmmo_Mat'
+	DefaultIconList(7)=Material'DV_Addons.Icon.T_WA_IronSight_Mat'
+	DefaultIconList(8)=Material'DV_Addons.Icon.T_WA_LargeCapacity_Mat'
+	DefaultIconList(9)=Material'DV_Addons.Icon.T_WA_LaserPointer_Mat'
+	DefaultIconList(10)=Material'DV_Addons.Icon.T_WA_PenetratingAmmo_Mat'
+	DefaultIconList(11)=Material'DV_Addons.Icon.T_WA_RapidFire_Mat'
+	DefaultIconList(12)=Material'DV_Addons.Icon.T_WA_Reddot_Mat'
+	DefaultIconList(13)=Material'DV_Addons.Icon.T_WA_Silencer_Mat'
+	DefaultIconList(14)=Material'DV_Addons.Icon.T_W_Todo_Mat'
 }

@@ -129,9 +129,17 @@ simulated function PlayImpactEffects(vector HitLocation)
 ----------------------------------------------------------*/
 defaultproperties
 {
+	// Mesh
+	Begin Object Name=WeaponMesh
+		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_PlasmaRifle'
+		Translation=(X=3.0, Y=-2.0, Z=-0.5)
+		Scale=0.95
+	End Object
+	Mesh=WeaponMesh
+	
 	// Settings
 	WeaponIconPath="DV_Weapons"
-	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Sniper'
+	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_EnergyGun'
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma
@@ -147,4 +155,6 @@ defaultproperties
 	SpinupTime=1.0
 	Spread(0)=0.0
 	MaxAmmo=50
+	bLongRail=true
+	bCannonMount=false
 }

@@ -85,4 +85,6 @@ defaultproperties
 	FireInterval(0)=0.5
 	SpreadDist=0.04
 	MaxAmmo=40
+	bLongRail=true
+	bCannonMount=false
 }
