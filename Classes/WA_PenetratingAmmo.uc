@@ -18,8 +18,8 @@ defaultproperties
 	Begin Object Name=AddonMesh
 		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_AmmoUpgrade_1'
 		Rotation=(Yaw=-16384, Pitch=-16384, Roll=16384)
-		Translation=(X=0.5, Y=11.0, Z=0.0)
-		Scale=2.0
+		Translation=(X=0.0, Y=6.0, Z=0.0)
+		Scale=1.5
 	End Object
 	
 	// Properties

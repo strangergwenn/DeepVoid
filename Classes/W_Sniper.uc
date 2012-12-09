@@ -43,5 +43,4 @@ defaultproperties
 	Spread(0)=0.0
 	MaxAmmo=20
 	bLongRail=true
-	bCannonMount=true
 }
