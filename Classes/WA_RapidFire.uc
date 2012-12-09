@@ -38,5 +38,5 @@ defaultproperties
 	SocketID=1
 	bRequiresCannonMount=true
 	IconPath="DV_Addons"
-	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
+	Icon=Texture2D'DV_Addons.Icon.T_WA_RapidFire'
 }

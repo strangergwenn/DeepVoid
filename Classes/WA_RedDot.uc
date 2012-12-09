@@ -16,7 +16,7 @@ defaultproperties
 {
 	// Interface
 	IconPath="DV_Addons"
-	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
+	Icon=Texture2D'DV_Addons.Icon.T_WA_Reddot'
 	
 	// Mesh
 	Begin Object Name=AddonMesh

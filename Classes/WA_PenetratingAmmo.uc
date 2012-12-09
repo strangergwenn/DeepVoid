@@ -16,14 +16,15 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=AddonMesh
-		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_Ammo_Red'
-		Rotation=(Yaw=-16384, Pitch=32768, Roll=16384)
-		Scale=0.3
+		StaticMesh=StaticMesh'DV_Addons.Mesh.SM_AmmoUpgrade_1'
+		Rotation=(Yaw=-16384, Pitch=-16384, Roll=16384)
+		Translation=(X=0.5, Y=11.0, Z=0.0)
+		Scale=2.0
 	End Object
 	
 	// Properties
 	DamageBonus=1.1
 	SocketID=3
 	IconPath="DV_Addons"
-	Icon=Texture2D'DV_Addons.Icon.T_W_Todo'
+	Icon=Texture2D'DV_Addons.Icon.T_WA_PenetratingAmmo'
 }
