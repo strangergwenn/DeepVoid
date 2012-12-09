@@ -21,7 +21,7 @@ defaultproperties
 	
     bCollideWorld=true
     
-    Damage=80
+    Damage=45
     DamageRadius=300
     Speed=5000
     DrawScale=1.0
