@@ -48,7 +48,7 @@ simulated function BeginFire(byte FireModeNum)
 		super.BeginFire(FireModeNum);
 	}
 	
-	if (FireModeNum == 0 && !bSpinningUp)
+	if (FireModeNum == 0 && !bSpinningUp && AmmoCount > 0)
 	{
 		SetTimer(SpinupTime, false, 'SpinnedUp');
 		bSpinningUp = true;

@@ -248,8 +248,8 @@ defaultProperties
 		bUpdateSkelWhenNotRendered=false
 		Translation=(X=0.0,Y=0.0,Z=-40.0)
 		LightEnvironment=FlagLightEnvironment
-		SkeletalMesh=SkeletalMesh'CTF_Flag_IronGuard.Mesh.S_CTF_Flag_IronGuard'
-		PhysicsAsset=PhysicsAsset'CTF_Flag_IronGuard.Mesh.S_CTF_Flag_IronGuard_Physics'
+		SkeletalMesh=SkeletalMesh'DV_Gameplay.Mesh.SK_Flag'
+		PhysicsAsset=PhysicsAsset'DV_Gameplay.Mesh.SK_Flag_Physics'
 		
 	End Object
 	SkelMesh=TheFlagSkelMesh;
