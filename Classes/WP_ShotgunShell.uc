@@ -26,5 +26,5 @@ defaultproperties
     DrawScale=1.0
     MaxSpeed=25000
     AccelRate=20000.0
-    MomentumTransfer=10000
+    MomentumTransfer=20000
 }

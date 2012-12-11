@@ -186,7 +186,6 @@ simulated function Drop(Controller OldOwner)
 defaultProperties
 {
 	// Networking
-	
 	Physics=PHYS_None
 	RemoteRole=ROLE_SimulatedProxy
 	bReplicateMovement=true
@@ -211,7 +210,7 @@ defaultProperties
 
 	// Ambient light
 	Begin Object class=PointLightComponent name=FlagLightComponent
-		Brightness=5.0
+		Brightness=3.0
 		LightColor=(R=10,G=255,B=0)
 		Radius=350.0
 		bEnabled=true
@@ -243,6 +242,7 @@ defaultProperties
 		bEnableClothSimulation=true
 		bAutoFreezeClothWhenNotRendered=true
 		
+		scale=0.5
 		bPerBoneMotionBlur=true
 		bAcceptsDynamicDecals=false
 		bUpdateSkelWhenNotRendered=false

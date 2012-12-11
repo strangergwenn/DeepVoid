@@ -40,6 +40,37 @@ replication
 	Firing management
 ----------------------------------------------------------*/
 
+/*--- Target designation --*/
+simulated function Tick(float DeltaTime)
+{
+	// Init
+	local vector Impact, SL, Unused;
+	local rotator SR;
+	FrameCount += 1;
+	
+	if (FrameCount % TickDivisor == 0 && Owner != None 
+		&& DVPlayerController(DVPawn(Owner).Controller) != None)
+	{
+		// Trace
+		SkeletalMeshComponent(Mesh).GetSocketWorldLocationAndRotation('Mount1', SL, SR);
+		if (DVPawn(Owner) != None)
+		{
+			DVPlayerController(DVPawn(Owner).Controller).TargetObject = Trace(
+				Impact,
+				Unused,
+				SL + vector(SR) * 10000.0,
+				SL,
+				true,,, TRACEFLAG_Bullet
+			);
+		}
+		if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None)
+		{
+			PlasmaDischarge.SetVectorParameter('ShockBeamEnd', Impact);
+		}
+	}
+}
+
+
 /*--- Launch spinup ---*/
 simulated function BeginFire(byte FireModeNum)
 {
@@ -80,8 +111,17 @@ simulated function StopFire(byte FireModeNum)
 	bSpinningUp = false;
 	bReadyToFire = false;
 	ClearTimer('SpinnedUp');
-	
 	super.StopFire(FireModeNum);
+}
+
+
+/*--- Fire ended ---*/
+reliable server simulated function ServerStopFire(byte FireModeNum)
+{
+	bSpinningUp = false;
+	bReadyToFire = false;
+	ClearTimer('SpinnedUp');
+	EndFire(FireModeNum);
 }
 
 
@@ -98,6 +138,8 @@ simulated function AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name 
 	PlasmaDischarge = new(Outer) class'ParticleSystemComponent';
 	PlasmaDischarge.bAutoActivate = false;
 	PlasmaDischarge.SetTemplate(PlasmaDischargeTemplate);
+	PlasmaDischarge.bUpdateComponentInTick = true;
+	PlasmaDischarge.SetTickGroup(TG_EffectsUpdateWork);
 	SkeletalMeshComponent(Mesh).AttachComponentToSocket(PlasmaDischarge, EffectSockets[0]);
 }
 
@@ -105,11 +147,6 @@ simulated function AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name 
 /*--- Muzzle flash ---*/
 simulated function PlayFiringEffects()
 {
-	if (bReadyToFire)
-	{
-		// Nope.
-		//MuzzleFlashPSC.ActivateSystem();
-	}
 }
 
 
@@ -119,7 +156,6 @@ simulated function PlayImpactEffects(vector HitLocation)
 	if (bReadyToFire)
 	{
 		PlasmaDischarge.ActivateSystem();
-		PlasmaDischarge.SetVectorParameter('ShockBeamEnd', HitLocation);
 	}
 }
 
@@ -131,8 +167,8 @@ defaultproperties
 {
 	// Mesh
 	Begin Object Name=WeaponMesh
-		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_PlasmaRifle'
-		Translation=(X=3.0, Y=-2.0, Z=-0.5)
+		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_Plasma'
+		Translation=(X=3.0, Y=-2.5, Z=0.5)
 		Scale=0.95
 	End Object
 	Mesh=WeaponMesh
@@ -152,6 +188,7 @@ defaultproperties
 	InstantHitDamage(0)=40.0
 	FireInterval(0)=0.33
 	SmoothingFactor=1.0
+	TickDivisor=2
 	SpinupTime=1.0
 	Spread(0)=0.0
 	MaxAmmo=50
