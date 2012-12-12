@@ -83,7 +83,7 @@ simulated function Tick(float DeltaTime)
 	// Init
 	local vector Impact, SL, Unused;
 	local rotator SR;
-	if (Weap == None)
+	if (Weap == None || Weap.Mesh == None)
 		return;
 	
 	// Trace
