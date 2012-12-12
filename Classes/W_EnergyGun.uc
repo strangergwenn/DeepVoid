@@ -29,10 +29,22 @@ var ParticleSystemComponent			PlasmaDischarge;
 var bool							bReadyToFire;
 var bool							bSpinningUp;
 
+var repnotify vector				ImpactPosition;
+
 replication
 {
 	if (bNetDirty)
-		bReadyToFire, bSpinningUp;
+		bReadyToFire, bSpinningUp, ImpactPosition;
+}
+
+
+simulated event ReplicatedEvent(name VarName)
+{	
+	`log("DVEG > ReplicatedEvent" @VarName);
+	if (VarName == 'ImpactPosition')
+	{
+		PlasmaDischarge.SetVectorParameter('ShockBeamEnd', ImpactPosition);
+	}
 }
 
 
@@ -48,24 +60,28 @@ simulated function Tick(float DeltaTime)
 	local rotator SR;
 	FrameCount += 1;
 	
-	if (FrameCount % TickDivisor == 0 && Owner != None 
-		&& DVPlayerController(DVPawn(Owner).Controller) != None)
+	if (FrameCount % TickDivisor == 0 && Owner != None)
 	{
 		// Trace
 		SkeletalMeshComponent(Mesh).GetSocketWorldLocationAndRotation('Mount1', SL, SR);
 		if (DVPawn(Owner) != None)
 		{
-			DVPlayerController(DVPawn(Owner).Controller).TargetObject = Trace(
-				Impact,
-				Unused,
-				SL + vector(SR) * 10000.0,
-				SL,
-				true,,, TRACEFLAG_Bullet
-			);
-		}
-		if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None)
-		{
-			PlasmaDischarge.SetVectorParameter('ShockBeamEnd', Impact);
+			if (DVPlayerController(DVPawn(Owner).Controller) != None)
+			{
+				DVPlayerController(DVPawn(Owner).Controller).TargetObject = Trace(
+					Impact,
+					Unused,
+					SL + vector(SR) * 10000.0,
+					SL,
+					true,,, TRACEFLAG_Bullet
+				);
+				if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None)
+				{
+					PlasmaDischarge.SetVectorParameter('ShockBeamEnd', Impact);
+					ImpactPosition = Impact;
+					bForceNetUpdate = true;
+				}
+			}
 		}
 	}
 }
@@ -74,6 +90,7 @@ simulated function Tick(float DeltaTime)
 /*--- Launch spinup ---*/
 simulated function BeginFire(byte FireModeNum)
 {
+	`log("DVEG > BeginFire" @self);
 	if (FireModeNum == 1 || bReadyToFire)
 	{
 		super.BeginFire(FireModeNum);
@@ -108,6 +125,7 @@ simulated function SpinnedUp()
 /*--- Fire ended ---*/
 simulated function StopFire(byte FireModeNum)
 {
+	`log("DVEG > StopFire" @self);
 	bSpinningUp = false;
 	bReadyToFire = false;
 	ClearTimer('SpinnedUp');
@@ -118,6 +136,7 @@ simulated function StopFire(byte FireModeNum)
 /*--- Fire ended ---*/
 reliable server simulated function ServerStopFire(byte FireModeNum)
 {
+	`log("DVEG > ServerStopFire" @self);
 	bSpinningUp = false;
 	bReadyToFire = false;
 	ClearTimer('SpinnedUp');
@@ -147,12 +166,14 @@ simulated function AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name 
 /*--- Muzzle flash ---*/
 simulated function PlayFiringEffects()
 {
+	`log("DVEG > PlayFiringEffects" @self);
 }
 
 
 /*--- Impact effects ---*/
 simulated function PlayImpactEffects(vector HitLocation)
 {
+	`log("DVEG > PlayImpactEffects" @bReadyToFire @self);
 	if (bReadyToFire)
 	{
 		PlasmaDischarge.ActivateSystem();

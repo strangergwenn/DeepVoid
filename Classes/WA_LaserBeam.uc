@@ -47,6 +47,10 @@ simulated function AttachToWeapon(DVWeapon wp)
 	super.AttachToWeapon(wp);
 	
 	// Owner check
+	if (wp.Owner == None)
+	{
+		return;
+	}
 	if (wp.Owner.IsA('DVConfigBench'))
 	{
 		if (DVConfigBench(wp.Owner).PC == None)
