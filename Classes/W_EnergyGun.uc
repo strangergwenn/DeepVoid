@@ -40,6 +40,10 @@ simulated event ReplicatedEvent(name VarName)
 	{
 		PlayFiringEffects(ImpactPosition);
 	}
+	else
+	{
+		Super.ReplicatedEvent(VarName);
+	}
 }
 
 
@@ -194,7 +198,7 @@ defaultproperties
 	TickDivisor=2
 	SpinupTime=1.0
 	Spread(0)=0.0
-	MaxAmmo=50
+	MaxAmmo=20
 	bLongRail=true
 	bCannonMount=false
 }

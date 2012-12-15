@@ -56,7 +56,7 @@ defaultproperties
 	WeaponProjectiles(0)=class'WP_Grenade'
 	WeaponFireTypes(0)=EWFT_Projectile
 	FireInterval(0)=1.0
-	MaxAmmo=25
+	MaxAmmo=15
 	bLongRail=false
 	bCannonMount=false
 }

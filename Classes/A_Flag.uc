@@ -222,7 +222,7 @@ defaultProperties
 	Begin Object class=PointLightComponent name=FlagLightComponent
 		Brightness=3.0
 		LightColor=(R=10,G=255,B=0)
-		Translation=(X=-100)
+		Translation=(X=-40)
 		Radius=350.0
 		bEnabled=true
 		CastShadows=true
@@ -257,7 +257,7 @@ defaultProperties
 		bPerBoneMotionBlur=true
 		bAcceptsDynamicDecals=false
 		bUpdateSkelWhenNotRendered=false
-		Translation=(X=-100.0,Y=0.0,Z=-40.0)
+		Translation=(X=-40.0,Y=0.0,Z=-40.0)
 		LightEnvironment=FlagLightEnvironment
 		SkeletalMesh=SkeletalMesh'DV_Gameplay.Mesh.SK_Flag'
 		PhysicsAsset=PhysicsAsset'DV_Gameplay.Mesh.SK_Flag_Physics'

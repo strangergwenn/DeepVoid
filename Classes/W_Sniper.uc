@@ -41,6 +41,6 @@ defaultproperties
 	FireInterval(0)=1.0
 	SmoothingFactor=1.0
 	Spread(0)=0.0
-	MaxAmmo=20
+	MaxAmmo=25
 	bLongRail=true
 }

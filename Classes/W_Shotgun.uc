@@ -84,7 +84,7 @@ defaultproperties
 	WeaponFireTypes(0)=EWFT_Custom
 	FireInterval(0)=0.5
 	SpreadDist=0.04
-	MaxAmmo=40
+	MaxAmmo=35
 	bLongRail=true
 	bCannonMount=false
 }
