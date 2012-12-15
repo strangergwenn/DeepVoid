@@ -13,7 +13,7 @@ class W_GrenadeLauncher extends DVWeapon;
 ----------------------------------------------------------*/
 
 /*--- Muzzle flash ---*/
-simulated function PlayFiringEffects()
+simulated function PlayFiringEffects(vector HitLocation)
 {
 	MuzzleFlashPSC.ActivateSystem();
 	SkeletalMeshComponent(Mesh).PlayAnim('Fire',,false,true,,true);

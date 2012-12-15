@@ -12,8 +12,6 @@ class W_EnergyGun extends W_Rifle;
 	Public attributes
 ----------------------------------------------------------*/
 
-var (DVEG) const ParticleSystem		PlasmaDischargeTemplate;
-
 var (DVEG) const SoundCue			SpinupSound;
 var (DVEG) const SoundCue			ReadySound;
 
@@ -23,8 +21,6 @@ var (DVEG) const float 				SpinupTime;
 /*----------------------------------------------------------
 	Private attributes
 ----------------------------------------------------------*/
-
-var ParticleSystemComponent			PlasmaDischarge;
 
 var bool							bReadyToFire;
 var bool							bSpinningUp;
@@ -37,13 +33,12 @@ replication
 		bReadyToFire, bSpinningUp, ImpactPosition;
 }
 
-
 simulated event ReplicatedEvent(name VarName)
 {	
 	`log("DVEG > ReplicatedEvent" @VarName);
 	if (VarName == 'ImpactPosition')
 	{
-		PlasmaDischarge.SetVectorParameter('ShockBeamEnd', ImpactPosition);
+		PlayFiringEffects(ImpactPosition);
 	}
 }
 
@@ -75,9 +70,8 @@ simulated function Tick(float DeltaTime)
 					SL,
 					true,,, TRACEFLAG_Bullet
 				);
-				if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None)
+				if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None && bReadyToFire)
 				{
-					PlasmaDischarge.SetVectorParameter('ShockBeamEnd', Impact);
 					ImpactPosition = Impact;
 					bForceNetUpdate = true;
 				}
@@ -148,36 +142,24 @@ reliable server simulated function ServerStopFire(byte FireModeNum)
 	Firing effect
 ----------------------------------------------------------*/
 
-/*--- Weapon attachment ---*/
-simulated function AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name SocketName)
-{
-	super.AttachWeaponTo(MeshCpnt, SocketName);
-	
-	// Plasma discharge
-	PlasmaDischarge = new(Outer) class'ParticleSystemComponent';
-	PlasmaDischarge.bAutoActivate = false;
-	PlasmaDischarge.SetTemplate(PlasmaDischargeTemplate);
-	PlasmaDischarge.bUpdateComponentInTick = true;
-	PlasmaDischarge.SetTickGroup(TG_EffectsUpdateWork);
-	SkeletalMeshComponent(Mesh).AttachComponentToSocket(PlasmaDischarge, EffectSockets[0]);
-}
-
-
 /*--- Muzzle flash ---*/
-simulated function PlayFiringEffects()
+simulated function PlayFiringEffects(vector HitLocation)
 {
 	`log("DVEG > PlayFiringEffects" @self);
+	if (!bSilenced && MuzzleFlashPSC != None && !bWeaponEmpty)
+	{
+		MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
+		MuzzleFlashPSC.ActivateSystem();
+		ImpactPosition = HitLocation;
+	}
 }
 
-
-/*--- Impact effects ---*/
+/*--- Muzzle flash ---*/
 simulated function PlayImpactEffects(vector HitLocation)
 {
-	`log("DVEG > PlayImpactEffects" @bReadyToFire @self);
-	if (bReadyToFire)
-	{
-		PlasmaDischarge.ActivateSystem();
-	}
+	`log("DVEG > PlayImpactEffects" @self);
+	ImpactPosition = HitLocation;
+	bForceNetUpdate = true;
 }
 
 
@@ -200,9 +182,9 @@ defaultproperties
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma
+	MuzzleFlashPSCTemplate=ParticleSystem'DV_CoreEffects.FX.PS_PlasmaBeam'
 	SpinupSound=SoundCue'DV_Sound.Weapons.A_PlasmaSpinup'
 	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
-	PlasmaDischargeTemplate=ParticleSystem'DV_CoreEffects.FX.PS_PlasmaBeam'
 	
 	// Weaponry
 	InstantHitMomentum(0)=40000.0

@@ -15,6 +15,7 @@ class A_Flag extends UDKCarriedObject
 
 var (Flag) const color					RedTeamColor;
 var (Flag) const color					BlueTeamColor;
+var (Flag) const float					AutoReturnTime;
 
 
 /*----------------------------------------------------------
@@ -166,16 +167,24 @@ simulated function Drop(Controller OldOwner)
 	bForceNetUpdate = true;
 	
 	SetBase(None);
-	
 	SetCollisionSize(0.75 * DefaultRadius, DefaultHeight);
 	SetCollisionType(COLLIDE_BlockAll);
 	SetCollision(true, false);
+	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
 	
 	SetPhysics(PHYS_Falling);
 	Velocity = 100.0 * VRand();
 	Velocity.Z += 300.0;
 	
 	`log("AF > Drop" @self);
+}
+
+
+/*-- Return when dropped for too long ---*/
+simulated function ReturnOnTimeOut()
+{
+	A_FlagBase(HomeBase).FlagReturned();
+	Destroy();
 }
 
 
@@ -198,6 +207,7 @@ defaultProperties
  	bHardAttach=true
 	bCollideActors=true
 	bIsReturnable=false
+	AutoReturnTime=20.0
 	RedTeamColor=(R=200,G=50,B=20)
 	BlueTeamColor=(R=20,G=50,B=200)
 
@@ -212,6 +222,7 @@ defaultProperties
 	Begin Object class=PointLightComponent name=FlagLightComponent
 		Brightness=3.0
 		LightColor=(R=10,G=255,B=0)
+		Translation=(X=-100)
 		Radius=350.0
 		bEnabled=true
 		CastShadows=true
@@ -246,7 +257,7 @@ defaultProperties
 		bPerBoneMotionBlur=true
 		bAcceptsDynamicDecals=false
 		bUpdateSkelWhenNotRendered=false
-		Translation=(X=0.0,Y=0.0,Z=-40.0)
+		Translation=(X=-100.0,Y=0.0,Z=-40.0)
 		LightEnvironment=FlagLightEnvironment
 		SkeletalMesh=SkeletalMesh'DV_Gameplay.Mesh.SK_Flag'
 		PhysicsAsset=PhysicsAsset'DV_Gameplay.Mesh.SK_Flag_Physics'
