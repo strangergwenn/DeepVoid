@@ -36,6 +36,7 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Rifle'
 	
 	// Weaponry
+	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'
 	InstantHitMomentum(0)=10000.0
 	InstantHitDamage(0)=15.0
 	FireInterval(0)=0.10

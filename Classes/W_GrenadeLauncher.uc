@@ -15,6 +15,7 @@ class W_GrenadeLauncher extends DVWeapon;
 /*--- Muzzle flash ---*/
 simulated function PlayFiringEffects(vector HitLocation)
 {
+	CauseMuzzleFlash();
 	MuzzleFlashPSC.ActivateSystem();
 	SkeletalMeshComponent(Mesh).PlayAnim('Fire',,false,true,,true);
 }
@@ -53,6 +54,7 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_GrenadeLauncher'
 	
 	// Weaponry
+	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'
 	WeaponProjectiles(0)=class'WP_Grenade'
 	WeaponFireTypes(0)=EWFT_Projectile
 	FireInterval(0)=1.0

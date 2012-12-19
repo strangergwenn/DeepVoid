@@ -80,6 +80,7 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Shotgun'
 	
 	// Weaponry
+	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'
 	WeaponProjectiles(0)=class'WP_ShotgunShell'
 	WeaponFireTypes(0)=EWFT_Custom
 	FireInterval(0)=0.5

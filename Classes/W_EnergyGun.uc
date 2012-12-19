@@ -150,11 +150,15 @@ reliable server simulated function ServerStopFire(byte FireModeNum)
 simulated function PlayFiringEffects(vector HitLocation)
 {
 	`log("DVEG > PlayFiringEffects" @self);
-	if (!bSilenced && MuzzleFlashPSC != None && !bWeaponEmpty)
+	if (!bWeaponEmpty)
 	{
-		MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
-		MuzzleFlashPSC.ActivateSystem();
-		ImpactPosition = HitLocation;
+		if (MuzzleFlashPSC != None)
+		{
+			MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
+			MuzzleFlashPSC.ActivateSystem();
+			ImpactPosition = HitLocation;
+		}
+		CauseMuzzleFlash();
 	}
 }
 
@@ -191,6 +195,7 @@ defaultproperties
 	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
 	
 	// Weaponry
+	MuzzleFlashLightClass=class'DeepVoid.EL_Plasma'
 	InstantHitMomentum(0)=40000.0
 	InstantHitDamage(0)=40.0
 	FireInterval(0)=0.33

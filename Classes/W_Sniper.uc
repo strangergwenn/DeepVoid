@@ -36,6 +36,7 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Sniper'
 	
 	// Weaponry
+	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'
 	InstantHitMomentum(0)=40000.0
 	InstantHitDamage(0)=90.0
 	FireInterval(0)=1.0
