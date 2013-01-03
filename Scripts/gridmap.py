@@ -16,12 +16,12 @@ import os, string, sys, datetime
 #---------------------------------------------------------
 
 # LEVEL_01
-res = 200.0
-xmin = -2480.0
-xmax = 6224.0
-ymin = -1488.0
-ymax = 7231.0
-unrealToPixelRatio = 2.0
+res = 50.0
+xmin = -2752.0
+xmax = 7824.0
+ymin = -1424.0
+ymax = 6896.0
+unrealToPixelRatio = 4.0
 sourceImage = "LEVEL_01.png"
 
 
@@ -32,34 +32,38 @@ sourceImage = "LEVEL_01.png"
 # Settings
 logName = sys.argv[1]
 eventType = sys.argv[2]
-im = Image.open(sourceImage)
-map = [[0] * int((xmax - xmin) / res) for n in xrange(int((ymax - ymin) / res))]
+map = [[0] * int((xmax - xmin) / (res/2)) for n in xrange(int((ymax - ymin) / (res/2)))]
 size = ((xmax - xmin) / unrealToPixelRatio), ((ymax - ymin) / unrealToPixelRatio)
 
 # Process
 def Process():	
 	maxPixel=0
-	print "Required image size is " + str(size) + ", found " + str(im.size)
+	bg = Image.open(sourceImage)
+	bg = bg.convert("RGBA")
+	print "Required image size is " + str(size) + ", found " + str(bg.size)
 	print "Map grid is " +  str(len(map))+ " by " + str(len(map[0]))
-	count = processLog (im, logName, eventType)
+	count = processLog (logName, eventType)
 	
 	# Local maximum
 	for x in range(int(xmin), int(xmax), int(res)):
 		for y in range(int(ymin), int(ymax), int(res)):
-			maxPixel = max(maxPixel, map[int(x/res)][int(y/res) ])
+			value = map[int(x/res)][int(y/res)]
+			maxPixel = max(maxPixel, value)
 	print "Maximum pixel found is " + str(maxPixel)
 	
 	# Map drawing
+	im = Image.new('RGBA', bg.size, (0, 0, 0, 255))
 	for x in range(int(xmin), int(xmax), int(res)):
 		for y in range(int(ymin), int(ymax), int(res)):
 			position = GetPxFromUnreal(im, x, y)
 			DrawArea(im, position, GetColorFromLevel(map[int(x/res)][int(y/res)], maxPixel))
 	
 	# Map additionnal data
-	usr_font = ImageFont.truetype("Arial.ttf", 64)
-	d_usr = ImageDraw.Draw(im)
-	d_usr = d_usr.text((400 ,im.size[1] - 150), GetInformation(count),(255,255,255), font=usr_font)
-	im.save(eventType + "_heatmap.png", "png")
+	bg = Image.blend(bg, im, 0.4)
+	d_usr = ImageDraw.Draw(bg)
+	usr_font = ImageFont.truetype("Arial.ttf", 48)
+	d_usr = d_usr.text((100, bg.size[1] - 80), GetInformation(count),(255,255,255), font=usr_font)
+	bg.save(eventType + "_heatmap.png", "png")
 
 
 #---------------------------------------------------------
@@ -67,7 +71,7 @@ def Process():
 #---------------------------------------------------------
 
 # Process a UDK log file
-def processLog(imgData, logName, type):
+def processLog(logName, type):
 	
 	# Init
 	f = open(logName, 'r')
@@ -81,7 +85,7 @@ def processLog(imgData, logName, type):
 			continue
 		
 		data = line[index:]
-		oldPos = processLogEntry(imgData, string.split(data, "/"), type, oldPos)
+		oldPos = processLogEntry(string.split(data, "/"), type, oldPos)
 		i += 1
 	print "Processed " + str(i) + " positions for " + type
 	return i
@@ -89,7 +93,7 @@ def processLog(imgData, logName, type):
 # Process a valid log line
 #   DVL/SHOOT/ID/X/-305.2567/Y/-1557.8965/Z/46.5563/EDL
 #    0    1   2  3    4      5     6      7    8     9   
-def processLogEntry(im, data, type, oldPos):
+def processLogEntry(data, type, oldPos):
 	
 	# First check
 	if len(data) < 5:
@@ -112,7 +116,7 @@ def processLogEntry(im, data, type, oldPos):
 
 # Draw an area
 def DrawArea(im, position, color):
-	if (color != (0,0,0)):
+	if (color != (0, 0, 0,)):
 		draw = ImageDraw.Draw(im)
 		offset = ((res /2) / unrealToPixelRatio)
 		draw.rectangle([(position[0] - offset, position[1] - offset), (position[0] + offset, position[1] + offset)], fill=color)
@@ -131,20 +135,25 @@ def GetInformation(count):
 	return information
 	
 # Get a color vector from a specific level
-def GetColorFromLevel(level, max):
-	lightingFactor = 255.0 / max
+def GetColorFromLevel(level, mx):
+	lightingFactor = 255 / mx
 	lv = lightingFactor * level
-	#return (GetValueInRange(lv, 100, 255), GetValueInRange(lv, 50, 200), GetValueInRange(lv, 0, 100))
-	return (int(lv), 0, 0)
-
-# Scale a color part
-def GetValueInRange(value, min, max):
-	if value <= min:
-		return 0
-	elif value > max:
-		return 0
+	if lv < 64:
+		return (0, GetColorCompUp(lv, 0.0), 255)
+	elif lv < 128:
+		return (0, 255, GetColorCompDown(lv, 64.0))
+	elif lv < 192:
+		return (GetColorCompUp(lv, 128.0), 255, 0)
 	else:
-		return int(value)
+		return (255, GetColorCompDown(lv, 192.0), 0)
+
+# Get a color component from min (up verson)
+def GetColorCompUp(value, mn):
+	return int(((value - mn) / 64.0) * 255.0)
+
+# Get a color component from min (down version)
+def GetColorCompDown(value, mn):
+	return 255 - int(((value - mn) / 64.0) * 255.0)
 
 # What is the pixel size of this unreal info
 def GetPxFromUnreal (img, X, Y):
