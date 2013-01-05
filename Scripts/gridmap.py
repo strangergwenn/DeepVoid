@@ -1,26 +1,29 @@
 #**
 #*  This work is distributed under the Lesser General Public License,
 #*	see LICENSE for details
-#*	
-#*	Execution : "gridmap.py <log file> <event>" will map the specifiec event (SHOOT, JUMP, LAND, KILL, HIT...)
 #*
-#*  @author Gwennael ARBONA
+#*	gridmap tool for DEEPVOID - Heatmap generation from event file (Launch.log with DV logging)
+#*
+#*	Execution : "gridmap.py <event> <resolution> " will map the specifiec event (SHOOT, JUMP, LAND, KILL, HIT...)
+#*
+#*  @author Gwennael ARBONA <gwennael.arbona@gmail.com>
 #**
 
 # Imports
 from PIL import Image, ImageDraw, ImageFont
-import os, string, sys, datetime
+import os, string, sys, datetime, math
 
 #---------------------------------------------------------
 #	Map settings
 #---------------------------------------------------------
 
 # LEVEL_01
-res = 50.0
 xmin = -2752.0
 xmax = 7824.0
 ymin = -1424.0
 ymax = 6896.0
+logBase = 1.4
+bendAmount = 0.3
 unrealToPixelRatio = 4.0
 sourceImage = "LEVEL_01.png"
 
@@ -30,8 +33,8 @@ sourceImage = "LEVEL_01.png"
 #---------------------------------------------------------
 
 # Settings
-logName = sys.argv[1]
-eventType = sys.argv[2]
+eventType = sys.argv[1]
+res = float(sys.argv[2])
 map = [[0] * int((xmax - xmin) / (res/2)) for n in xrange(int((ymax - ymin) / (res/2)))]
 size = ((xmax - xmin) / unrealToPixelRatio), ((ymax - ymin) / unrealToPixelRatio)
 
@@ -42,7 +45,7 @@ def Process():
 	bg = bg.convert("RGBA")
 	print "Required image size is " + str(size) + ", found " + str(bg.size)
 	print "Map grid is " +  str(len(map))+ " by " + str(len(map[0]))
-	count = processLog (logName, eventType)
+	count = processLog ("Launch.log", eventType)
 	
 	# Local maximum
 	for x in range(int(xmin), int(xmax), int(res)):
@@ -59,7 +62,7 @@ def Process():
 			DrawArea(im, position, GetColorFromLevel(map[int(x/res)][int(y/res)], maxPixel))
 	
 	# Map additionnal data
-	bg = Image.blend(bg, im, 0.4)
+	bg = Image.blend(bg, im, bendAmount)
 	d_usr = ImageDraw.Draw(bg)
 	usr_font = ImageFont.truetype("Arial.ttf", 48)
 	d_usr = d_usr.text((100, bg.size[1] - 80), GetInformation(count),(255,255,255), font=usr_font)
@@ -76,7 +79,6 @@ def processLog(logName, type):
 	# Init
 	f = open(logName, 'r')
 	i = 0
-	oldPos = (0,0)
 	
 	# Parsing
 	for line in f:
@@ -85,33 +87,36 @@ def processLog(logName, type):
 			continue
 		
 		data = line[index:]
-		oldPos = processLogEntry(string.split(data, "/"), type, oldPos)
-		i += 1
+		i += processLogEntry(string.split(data, "/"), type)
 	print "Processed " + str(i) + " positions for " + type
 	return i
 
 # Process a valid log line
 #   DVL/SHOOT/ID/X/-305.2567/Y/-1557.8965/Z/46.5563/EDL
 #    0    1   2  3    4      5     6      7    8     9   
-def processLogEntry(data, type, oldPos):
+def processLogEntry(data, type):
 	
 	# First check
 	if len(data) < 5:
-		return (0, 0)
+		return 0
 	
-	# Heatmap
-	if data[1] == type:
-		lX = int(float(data[4]) / res)
-		lY = int(float(data[6]) / res)
+	# Heatmap		
+	elif data[1] == type:
+		if type == "POS" or type == "IPOS":
+			lX = int(float(data[5]) / res)
+			lY = int(float(data[7]) / res)
+		else:
+			lX = int(float(data[4]) / res)
+			lY = int(float(data[6]) / res)
 		map[lX][lY] += 1
-		return (0, 0)
+		return 1
 	
 	# Default
 	else:
-		return oldPos
+		return 0
 
 #---------------------------------------------------------
-#	Utility methods
+#	Color methods
 #---------------------------------------------------------
 
 # Draw an area
@@ -123,22 +128,15 @@ def DrawArea(im, position, color):
 		del draw
 	return
 
-	
-# Map additionnal data
-def GetInformation(count):
-	now = datetime.datetime.now()
-	information = "DEEPVOID"
-	information += "  |  Generated on %d/%d/%d - %d:%d:%d" %  (now.month, now.day,  now.year,  now.hour,  now.minute,  now.second)
-	information += "  |  Level is `" + sourceImage.replace(".png", "") + "`"
-	information += "  |  Resolution is " + str(int(res)) + "cm"
-	information += "  |  " + str(count) + " events in file"
-	return information
-	
 # Get a color vector from a specific level
 def GetColorFromLevel(level, mx):
-	lightingFactor = 255 / mx
-	lv = lightingFactor * level
-	if lv < 64:
+	lightingFactor = float(255.0 / float(math.log(mx, logBase)))
+	lv = float(lightingFactor * float(level))
+	if level <= 0:
+		return (0, 0, 0)
+	if level > 255:
+		return (255, 0, 0)
+	elif lv < 64:
 		return (0, GetColorCompUp(lv, 0.0), 255)
 	elif lv < 128:
 		return (0, 255, GetColorCompDown(lv, 64.0))
@@ -154,6 +152,21 @@ def GetColorCompUp(value, mn):
 # Get a color component from min (down version)
 def GetColorCompDown(value, mn):
 	return 255 - int(((value - mn) / 64.0) * 255.0)
+
+
+#---------------------------------------------------------
+#	Utility methods
+#---------------------------------------------------------
+
+# Map additionnal data
+def GetInformation(count):
+	now = datetime.datetime.now()
+	information = "DEEPVOID"
+	information += "  |  %d/%d/%d - %d:%d:%d" %  (now.month, now.day,  now.year,  now.hour,  now.minute,  now.second)
+	information += "  |  Level is `" + sourceImage.replace(".png", "") + "`"
+	information += "  |  Resolution is " + str(int(res)) + "cm"
+	information += "  |  " + str(count) + " matching events (`" + eventType + "`)"
+	return information
 
 # What is the pixel size of this unreal info
 def GetPxFromUnreal (img, X, Y):
