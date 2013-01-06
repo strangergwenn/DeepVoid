@@ -29,6 +29,7 @@ var PointLightComponent 				FlagLight;
 
 var byte 								TeamIndex;
 
+var bool								bTaken;
 var bool								bIsReturnable;
 
 var float								DefaultRadius;
@@ -76,6 +77,7 @@ function PostBeginPlay()
 		DefaultRadius = CylinderComponent(CollisionComponent).CollisionRadius;
 		DefaultHeight = CylinderComponent(CollisionComponent).CollisionHeight;
 	}
+	SetTimer(1.0, true, 'PosTimer');
 }
 
 
@@ -154,7 +156,8 @@ reliable server simulated function AttachFlag(P_Pawn PP)
 	
 	if (WorldInfo.NetMode == NM_DedicatedServer)
 		G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
-		
+	
+	bTaken = true;
 	bForceNetUpdate = true;
 }
 
@@ -162,9 +165,11 @@ reliable server simulated function AttachFlag(P_Pawn PP)
 /*--- Drop the flag ---*/
 simulated function Drop(Controller OldOwner)
 {
+	bTaken = false;
 	bIsReturnable = true;
 	bCollideWorld = true;
 	bForceNetUpdate = true;
+	ServerLogAction("FDROP");
 	
 	SetBase(None);
 	SetCollisionSize(0.75 * DefaultRadius, DefaultHeight);
@@ -185,6 +190,34 @@ simulated function ReturnOnTimeOut()
 {
 	A_FlagBase(HomeBase).FlagReturned();
 	Destroy();
+}
+
+/*--- Position tick ---*/
+simulated function PosTimer()
+{
+	if (bTaken)
+	{
+		ServerLogAction("FPOS");
+	}
+}
+
+
+/*--- Standard log procedure ---*/
+reliable server simulated function ServerLogAction(string event)
+{
+	if (Holder != None && (WorldInfo.NetMode == NM_DedicatedServer || WorldInfo.NetMode == NM_Standalone))
+	{
+		if (Holder.bDVLog)
+		{
+			`log("DVL/"
+				$event 
+				$"/X/" $Location.Y
+				$"/Y/" $Location.X 
+				$"/Z/" $Location.Z 
+				$"/EDL"
+			);
+		}
+	}
 }
 
 

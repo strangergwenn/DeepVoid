@@ -92,28 +92,25 @@ def processLog(logName, type):
 	return i
 
 # Process a valid log line
-#   DVL/SHOOT/ID/X/-305.2567/Y/-1557.8965/Z/46.5563/EDL
-#    0    1   2  3    4      5     6      7    8     9   
+#   DVL/SHOOT/X/-305.2567/Y/-1557.8965/Z/46.5563/EDL
+#    0    1   2  3        4      5     6    7     8     
 def processLogEntry(data, type):
 	
 	# First check
-	if len(data) < 5:
+	if len(data) < 7:
 		return 0
 	
-	# Heatmap		
+	# Heatmap
 	elif data[1] == type:
-		if type == "POS" or type == "IPOS":
-			lX = int(float(data[5]) / res)
-			lY = int(float(data[7]) / res)
-		else:
-			lX = int(float(data[4]) / res)
-			lY = int(float(data[6]) / res)
+		lX = int(float(data[4]) / res)
+		lY = int(float(data[6]) / res)
 		map[lX][lY] += 1
 		return 1
 	
 	# Default
 	else:
 		return 0
+
 
 #---------------------------------------------------------
 #	Color methods
