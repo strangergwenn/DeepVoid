@@ -106,7 +106,8 @@ defaultproperties
 		AnimSets(0)=AnimSet'CH_AnimHuman.Anims.K_AnimHuman_AimOffset'
 		AnimSets(1)=AnimSet'CH_AnimHuman.Anims.K_AnimHuman_BaseMale'
 		AnimTreeTemplate=AnimTree'DV_Spacegear.Mesh.AT_CH_Human'
-		SkeletalMesh=SkeletalMesh'DV_Spacegear.Mesh.SK_SpaceSuit'
+		SkeletalMesh=SkeletalMesh'DV_Character.Mesh.SK_Character'
+		Translation=(X=0.000000,Y=0.000000,Z=-105.000000)
 	End Object
 	
 	// Set to true for heatmap logs
@@ -133,6 +134,6 @@ defaultproperties
 	FootStepSound=SoundCue'DV_Sound.Gameplay.A_Walk'
 	JumpSound=SoundCue'DV_Sound.Gameplay.A_Jump'
 	HitSound=SoundCue'DV_Sound.Impacts.A_Impact_Player'
-	TeamMaterials[0]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Red'
-	TeamMaterials[1]=MaterialInstanceConstant'DV_Spacegear.Material.M_SpaceSuit_Blue'
+	TeamMaterials[0]=MaterialInstanceConstant'DV_Character.Material.M_SpaceSuit_INST'
+	TeamMaterials[1]=MaterialInstanceConstant'DV_Character.Material.M_SpaceSuit_Blue_INST'
 }
