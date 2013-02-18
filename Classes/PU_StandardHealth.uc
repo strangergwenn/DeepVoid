@@ -26,6 +26,26 @@ auto state Pickup
 		DVPawn(P).AddHealth(HealthRechargeAmount);
 		super.SpawnCopyFor(P);
 	}
+
+	function bool ValidTouch(Pawn Other)
+	{
+		local DVPlayerController PC;
+
+		if (Other == None)
+		{
+			return false;
+		}
+		else if (Other.Controller == None)
+		{
+			SetTimer( 0.2, false, nameof(RecheckValidTouch) );
+			return false;
+		}
+		else
+		{
+			PC = DVPlayerController(Other.Controller);
+			return (DVPawn(PC.Pawn).Health < DVPawn(PC.Pawn).HealthMax);
+		}
+	}
 }
 
 

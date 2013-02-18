@@ -185,6 +185,18 @@ simulated function Drop(Controller OldOwner)
 }
 
 
+/*--- Pawn tick ---*/
+simulated function Tick(float DeltaTime)
+{
+	// Weapon adjustment
+	if (Location.Z < WorldInfo.KillZ + 1000.0)
+	{
+		A_FlagBase(HomeBase).FlagReturned();
+		Destroy();
+	}
+	super.Tick(DeltaTime);
+}
+
 /*-- Return when dropped for too long ---*/
 simulated function ReturnOnTimeOut()
 {
@@ -211,6 +223,7 @@ reliable server simulated function ServerLogAction(string event)
 		{
 			`log("DVL/"
 				$event 
+				$"/" $self
 				$"/X/" $Location.Y
 				$"/Y/" $Location.X 
 				$"/Z/" $Location.Z 
