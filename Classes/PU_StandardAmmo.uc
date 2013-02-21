@@ -23,7 +23,7 @@ auto state Pickup
 {
 	function SpawnCopyFor(Pawn P)
 	{
-		DVPawn(P).AddWeaponAmmo(DVPawn(P).CurrentWeaponClass.default.MaxAmmo);
+		DVPawn(P).AddWeaponAmmo(AmmoRechargeAmount);
 		super.SpawnCopyFor(P);
 	}
 
@@ -62,6 +62,6 @@ defaultproperties
 	End Object
 	
 	RespawnTime=5.0
-	AmmoRechargeAmount=100
+	AmmoRechargeAmount=1000
 	PickupSound=SoundCue'DV_Sound.Gameplay.A_Heal'
 }
