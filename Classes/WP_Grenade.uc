@@ -20,12 +20,13 @@ defaultproperties
     MyDamageType=class'DamageType'
 	
     bCollideWorld=true
-    
+
+	CurveScaling=0.5
     Damage=45
     DamageRadius=300
-    Speed=5000
+    Speed=4000
     DrawScale=1.0
-    MaxSpeed=10000
-    AccelRate=15000.0
+    MaxSpeed=5000
+    AccelRate=5000.0
     MomentumTransfer=30000
 }

@@ -199,7 +199,7 @@ defaultproperties
 	InstantHitMomentum(0)=40000.0
 	InstantHitDamage(0)=40.0
 	FireInterval(0)=0.33
-	SmoothingFactor=1.0
+	SmoothingFactor=0.5
 	TickDivisor=2
 	SpinupTime=1.0
 	Spread(0)=0.0

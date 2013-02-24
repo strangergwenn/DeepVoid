@@ -22,7 +22,8 @@ var float 	SpreadDist;
 /*--- Custom burst-fire ---*/
 simulated function CustomFire()
 {
-   	local vector RealStartLoc, AimDir, YDir, ZDir;
+   	local vector StartTrace, XDir, YDir, ZDir;
+   	local rotator AimDir;
 	local class<Projectile> ShardProjectileClass;
 	local Projectile Proj;
 	local float Mag;
@@ -32,8 +33,10 @@ simulated function CustomFire()
 	IncrementFlashCount();
 	if (Role == ROLE_Authority)
 	{
-		RealStartLoc = GetPhysicalFireStartLoc();
-		GetAxes(GetAdjustedAim(RealStartLoc),AimDir, YDir, ZDir);
+		// Traces
+		StartTrace = Instigator.GetWeaponStartTraceLocation();
+		AimDir = DVWeapon(DVPawn(Owner).Weapon).GetZoomViewRotation();
+		GetAxes(AimDir ,XDir, YDir, ZDir);
 
 		// A shard in every direction
 		ShardProjectileClass = GetProjectileClass();
@@ -42,10 +45,10 @@ simulated function CustomFire()
 			for ( j=-1; j<2; j++ )
 			{
 				Mag = (abs(i)+abs(j) > 1) ? 0.7 : 1.0;
-				Proj = Spawn(ShardProjectileClass,,, RealStartLoc);
+				Proj = Spawn(ShardProjectileClass,,, StartTrace);
 				if (Proj != None)
 				{
-					Proj.Init(AimDir + (0.3 + 0.7*FRand())*Mag*i*SpreadDist*YDir + (0.3 + 0.7*FRand())*Mag*j*SpreadDist*ZDir );
+					Proj.Init(vector(AimDir) + (FRand())*Mag*i*SpreadDist*YDir + (FRand())*Mag*j*SpreadDist*ZDir );
 				}
 			}
 	    }
@@ -72,7 +75,7 @@ defaultproperties
 	WeaponEmptySound=SoundCue'DV_Sound.Weapons.A_Empty'
 	ZoomOffset=(X=-1.0000,Y=40.000000,Z=0.000000)
 	ZoomSensitivity=0.8
-	SmoothingFactor=0.7
+	SmoothingFactor=0.5
 	ZoomedFOV=45
 	
 	// Interface
@@ -83,9 +86,9 @@ defaultproperties
 	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'
 	WeaponProjectiles(0)=class'WP_ShotgunShell'
 	WeaponFireTypes(0)=EWFT_Custom
-	FireInterval(0)=0.5
-	SpreadDist=0.04
-	MaxAmmo=35
+	FireInterval(0)=0.6
+	SpreadDist=0.03
+	MaxAmmo=25
 	bLongRail=true
 	bCannonMount=false
 }
