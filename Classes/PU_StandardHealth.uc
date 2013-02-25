@@ -21,13 +21,13 @@ var (Health) int			HealthRechargeAmount;
 
 auto state Pickup
 {
-	function SpawnCopyFor(Pawn P)
+	simulated function SpawnCopyFor(Pawn P)
 	{
 		DVPawn(P).AddHealth(HealthRechargeAmount);
 		super.SpawnCopyFor(P);
 	}
 
-	function bool ValidTouch(Pawn Other)
+	simulated function bool ValidTouch(Pawn Other)
 	{
 		local DVPlayerController PC;
 

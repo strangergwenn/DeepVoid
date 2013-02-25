@@ -25,6 +25,7 @@ simulated function CustomFire()
    	local vector StartTrace, XDir, YDir, ZDir;
    	local rotator AimDir;
 	local class<Projectile> ShardProjectileClass;
+	local DVWeapon wp;
 	local Projectile Proj;
 	local float Mag;
 	local int i,j;
@@ -34,9 +35,10 @@ simulated function CustomFire()
 	if (Role == ROLE_Authority)
 	{
 		// Traces
-		StartTrace = Instigator.GetWeaponStartTraceLocation();
-		AimDir = DVWeapon(DVPawn(Owner).Weapon).GetZoomViewRotation();
-		GetAxes(AimDir ,XDir, YDir, ZDir);
+		wp = DVWeapon(DVPawn(Owner).Weapon);
+		StartTrace = wp.InstantFireStartTrace();
+		AimDir = wp.GetZoomViewRotation();
+		GetAxes(AimDir, XDir, YDir, ZDir);
 
 		// A shard in every direction
 		ShardProjectileClass = GetProjectileClass();

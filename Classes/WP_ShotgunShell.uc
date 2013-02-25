@@ -21,6 +21,7 @@ defaultproperties
 	
     bCollideWorld=true
     
+    CurveScaling=0
     Damage=8
     Speed=15000
     DrawScale=1.5

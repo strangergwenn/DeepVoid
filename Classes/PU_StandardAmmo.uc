@@ -21,13 +21,13 @@ var (Ammo) int			AmmoRechargeAmount;
 
 auto state Pickup
 {
-	function SpawnCopyFor(Pawn P)
+	simulated function SpawnCopyFor(Pawn P)
 	{
 		DVPawn(P).AddWeaponAmmo(AmmoRechargeAmount);
 		super.SpawnCopyFor(P);
 	}
 
-	function bool ValidTouch(Pawn Other)
+	simulated function bool ValidTouch(Pawn Other)
 	{
 		local DVPlayerController PC;
 

@@ -59,7 +59,7 @@ simulated function Tick(float DeltaTime)
 	local rotator SR;
 	FrameCount += 1;
 	
-	if (FrameCount % TickDivisor == 0 && Owner != None)
+	if (Owner != None)
 	{
 		// Trace
 		SkeletalMeshComponent(Mesh).GetSocketWorldLocationAndRotation('Mount1', SL, SR);
@@ -165,6 +165,7 @@ simulated function PlayFiringEffects(vector HitLocation)
 /*--- Muzzle flash ---*/
 simulated function PlayImpactEffects(vector HitLocation)
 {
+	super.PlayImpactEffects(HitLocation);
 	`log("DVEG > PlayImpactEffects" @self);
 	ImpactPosition = HitLocation;
 	bForceNetUpdate = true;
@@ -190,6 +191,7 @@ defaultproperties
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma
+	ImpactEffect=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Impact')
 	MuzzleFlashPSCTemplate=ParticleSystem'DV_CoreEffects.FX.PS_PlasmaBeam'
 	SpinupSound=SoundCue'DV_Sound.Weapons.A_PlasmaSpinup'
 	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
