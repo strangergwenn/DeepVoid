@@ -30,6 +30,9 @@ defaultproperties
 	ZoomOffset=(X=-1.0000,Y=40.000000,Z=0.000000)
 	ZoomSensitivity=0.7
 	ZoomedFOV=45
+
+	// Recoil
+	RecoilAngle=200
 	
 	// Interface
 	WeaponIconPath="DV_Weapons"

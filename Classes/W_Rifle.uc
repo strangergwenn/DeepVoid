@@ -34,6 +34,12 @@ defaultproperties
 	// Interface
 	WeaponIconPath="DV_Weapons"
 	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Rifle'
+
+	// Recoil
+	MinSpread=0.0
+	MaxSpread=0.025
+	SpreadTime=2.0
+	RecoilAngle=100
 	
 	// Weaponry
 	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'
@@ -41,7 +47,6 @@ defaultproperties
 	InstantHitDamage(0)=15.0
 	FireInterval(0)=0.10
 	SmoothingFactor=0.5
-	Spread(0)=0.15
 	MaxAmmo=40
 	bLongRail=true
 	bCannonMount=true

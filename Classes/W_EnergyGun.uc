@@ -195,6 +195,10 @@ defaultproperties
 	MuzzleFlashPSCTemplate=ParticleSystem'DV_CoreEffects.FX.PS_PlasmaBeam'
 	SpinupSound=SoundCue'DV_Sound.Weapons.A_PlasmaSpinup'
 	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
+
+	// Recoil
+	MaxSpread=0.0
+	RecoilAngle=200
 	
 	// Weaponry
 	MuzzleFlashLightClass=class'DeepVoid.EL_Plasma'

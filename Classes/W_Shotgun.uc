@@ -79,6 +79,9 @@ defaultproperties
 	ZoomSensitivity=0.8
 	SmoothingFactor=0.5
 	ZoomedFOV=45
+
+	// Recoil
+	RecoilAngle=300
 	
 	// Interface
 	WeaponIconPath="DV_Weapons"
