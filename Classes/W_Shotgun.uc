@@ -22,10 +22,9 @@ var float 	SpreadDist;
 /*--- Custom burst-fire ---*/
 simulated function CustomFire()
 {
-   	local vector StartTrace, XDir, YDir, ZDir;
+   	local vector StartTrace, EndTrace, XDir, YDir, ZDir;
    	local rotator AimDir;
 	local class<Projectile> ShardProjectileClass;
-	local DVWeapon wp;
 	local Projectile Proj;
 	local float Mag;
 	local int i,j;
@@ -35,9 +34,9 @@ simulated function CustomFire()
 	if (Role == ROLE_Authority)
 	{
 		// Traces
-		wp = DVWeapon(DVPawn(Owner).Weapon);
-		StartTrace = wp.InstantFireStartTrace();
-		AimDir = wp.GetZoomViewRotation();
+		StartTrace = InstantFireStartTrace();
+		EndTrace = DVPlayerController(DVPawn(Owner).Controller).CurrentAimLocation;
+		AimDir = rotator(EndTrace - StartTrace);
 		GetAxes(AimDir, XDir, YDir, ZDir);
 
 		// A shard in every direction
@@ -50,7 +49,7 @@ simulated function CustomFire()
 				Proj = Spawn(ShardProjectileClass,,, StartTrace);
 				if (Proj != None)
 				{
-					Proj.Init(vector(AimDir) + (FRand())*Mag*i*SpreadDist*YDir + (FRand())*Mag*j*SpreadDist*ZDir );
+					Proj.Init(Normal(vector(AimDir)) + (FRand())*Mag*i*SpreadDist*YDir + (FRand())*Mag*j*SpreadDist*ZDir );
 				}
 			}
 	    }

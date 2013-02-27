@@ -23,7 +23,7 @@ defaultproperties
     
     CurveScaling=0
     Damage=8
-    Speed=15000
+    Speed=100
     DrawScale=1.5
     MaxSpeed=25000
     AccelRate=20000.0
