@@ -36,10 +36,10 @@ defaultproperties
 	WeaponIcon=Texture2D'DV_Weapons.Icon.T_W_Rifle'
 
 	// Recoil
-	MinSpread=0.0
-	MaxSpread=0.025
+	MinSpread=0.01
+	MaxSpread=0.05
 	SpreadTime=2.0
-	RecoilAngle=100
+	RecoilAngle=70
 	
 	// Weaponry
 	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'

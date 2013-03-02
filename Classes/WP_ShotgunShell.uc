@@ -25,7 +25,7 @@ defaultproperties
     Damage=8
     Speed=100
     DrawScale=1.5
-    MaxSpeed=25000
-    AccelRate=20000.0
+    MaxSpeed=15000
+    AccelRate=5000.0
     MomentumTransfer=25000
 }

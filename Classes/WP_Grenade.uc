@@ -9,13 +9,25 @@ class WP_Grenade extends DVProjectile;
 
 
 /*----------------------------------------------------------
+	Methods
+----------------------------------------------------------*/
+
+/*--- Explosion effects ---*/
+simulated function SpawnExplosionEffects(vector HitLocation, vector HitNormal)
+{
+	// Set the FX higher than the ground
+	super.SpawnExplosionEffects(HitLocation + HitNormal * 50.0, HitNormal);
+}
+
+
+/*----------------------------------------------------------
 	Properties
 ----------------------------------------------------------*/
 
 defaultproperties
 {
 	ProjFlightTemplate=ParticleSystem'VH_Manta.Effects.PS_Manta_Projectile'
-	ProjExplosionTemplate=ParticleSystem'WP_RocketLauncher.Effects.P_WP_RocketLauncher_RocketExplosion'
+	ProjExplosionTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Detonation'
 	ExplosionSound=SoundCue'DV_Sound.Impacts.A_Impact_Grenade'
     MyDamageType=class'DamageType'
 	
