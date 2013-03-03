@@ -65,7 +65,7 @@ defaultproperties
 		LightColor=(R=50,G=250,B=10)
 	End Object
 	
-	RespawnTime=5.0
+	RespawnTime=20.0
 	HealthRechargeAmount=50
 	PickupSound=SoundCue'DV_Sound.Gameplay.A_Heal'
 }

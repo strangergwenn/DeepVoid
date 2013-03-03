@@ -17,6 +17,8 @@ var (Flag) const color					RedTeamColor;
 var (Flag) const color					BlueTeamColor;
 var (Flag) const float					AutoReturnTime;
 
+var (Flag) const array<MaterialInstanceConstant> TeamMaterials;
+
 
 /*----------------------------------------------------------
 	Private attributes
@@ -24,8 +26,13 @@ var (Flag) const float					AutoReturnTime;
 
 var repnotify P_Pawn					Holder;
 
+var LinearColor							MaterialLight;
 var repnotify color						LightColor;
 var PointLightComponent 				FlagLight;
+
+var StaticMeshComponent					Mesh;
+
+var MaterialInstanceConstant			TeamMaterial;
 
 var byte 								TeamIndex;
 
@@ -81,20 +88,41 @@ function PostBeginPlay()
 }
 
 
-/*--- Set the flag data ---*/
+/*--- Set the flag data server-side ---*/
 reliable server simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
 {
 	TeamIndex = Index;
 	HomeBase = FlagParent;
 	LightColor = (TeamIndex == 0) ? RedTeamColor : BlueTeamColor;
+	MaterialLight = ColorToLinearColor(LightColor);
+	if (TeamMaterial != None && WorldInfo.NetMode == NM_Standalone)
+	{
+		TeamMaterial.SetVectorParameterValue('Light', MaterialLight);
+		ClientSetFlagData();
+	}
 	`log("AF > SetFlagData" @self);
 }
+
+/*--- Set the flag data client-side---*/
 reliable client simulated function ClientSetFlagData()
 {
 	FlagLight.SetLightProperties(
 		FlagLight.Brightness,
 		LightColor
 	);
+	if (TeamMaterial != None)
+	{
+		MaterialLight = ColorToLinearColor(LightColor);
+		TeamMaterial.SetVectorParameterValue('Light', MaterialLight);
+	}
+	if (TeamMaterials[TeamIndex] != None)
+	{
+		TeamMaterial = Mesh.CreateAndSetMaterialInstanceConstant(0);
+		if (TeamMaterial != None)
+		{
+			TeamMaterial.SetParent(TeamMaterials[TeamIndex]);
+		}
+	}
 	`log("AF > ClientSetFlagData" @self);
 }
 
@@ -248,6 +276,7 @@ defaultProperties
 	NetPriority=+00003.000000
 	
 	// Gameplay
+	bAlwaysRelevant=true
 	bHome=true
 	bStatic=false
  	bHardAttach=true
@@ -266,10 +295,10 @@ defaultProperties
 
 	// Ambient light
 	Begin Object class=PointLightComponent name=FlagLightComponent
-		Brightness=3.0
+		Brightness=1.5
 		LightColor=(R=10,G=255,B=0)
-		Translation=(X=-40)
-		Radius=350.0
+		Translation=(X=-40.0,Y=0.0,Z=240.0)
+		Radius=500.0
 		bEnabled=true
 		CastShadows=true
 		bRenderLightShafts=true
@@ -285,31 +314,20 @@ defaultProperties
 	Components.Add(FlagLightEnvironment)
 
 	// Mesh
-	Begin Object Class=SkeletalMeshComponent Name=TheFlagSkelMesh
-		PhysicsWeight=0
+	Begin Object Class=StaticMeshComponent Name=TheFlagMesh
 		BlockActors=false
 		CollideActors=false
 		BlockRigidBody=true
-		RBChannel=RBCC_Nothing
-		bHasPhysicsAssetInstance=true
-		RBCollideWithChannels=(Default=false,GameplayPhysics=false,EffectPhysics=false,Cloth=true)
-		
-		ClothRBChannel=RBCC_Cloth
-		ClothWind=(X=20.0,Y=10.0)
-		bEnableClothSimulation=true
-		bAutoFreezeClothWhenNotRendered=true
-		
-		scale=0.5
-		bPerBoneMotionBlur=true
-		bAcceptsDynamicDecals=false
-		bUpdateSkelWhenNotRendered=false
-		Translation=(X=-40.0,Y=0.0,Z=-40.0)
+		scale=0.4
+		Translation=(X=-40.0,Y=0.0,Z=-45.0)
 		LightEnvironment=FlagLightEnvironment
-		SkeletalMesh=SkeletalMesh'DV_Gameplay.Mesh.SK_Flag'
-		PhysicsAsset=PhysicsAsset'DV_Gameplay.Mesh.SK_Flag_Physics'
-		
+		StaticMesh=StaticMesh'DV_Gameplay.Mesh.SM_Flag'
 	End Object
-	SkelMesh=TheFlagSkelMesh;
-	Components.Add(TheFlagSkelMesh)
-	CollisionComponent=TheFlagSkelMesh
+	Mesh=TheFlagMesh;
+	Components.Add(TheFlagMesh)
+	CollisionComponent=TheFlagMesh
+
+	// Materials
+	TeamMaterials[0]=MaterialInstanceConstant'DV_Gameplay.Materials.MI_Flag_Red'
+	TeamMaterials[1]=MaterialInstanceConstant'DV_Gameplay.Materials.MI_Flag_Blue'
 }

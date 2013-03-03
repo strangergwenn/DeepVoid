@@ -153,11 +153,11 @@ defaultProperties
 		bForceDirectLightMap=true
 		LightEnvironment=MyLightEnvironment
 		
-		Scale=0.7
-		Translation=(Z=-48)
+		Scale=0.4
+		Translation=(X=-40.0,Y=0.0,Z=-48.0)
 		AlwaysLoadOnClient=true
 		AlwaysLoadOnServer=true
-		StaticMesh=StaticMesh'DV_Spacegear.Mesh.SM_FlagBase'
+		StaticMesh=StaticMesh'DV_Gameplay.Mesh.SM_Base'
 		
 	End Object
 	CollisionComponent=GroundBase

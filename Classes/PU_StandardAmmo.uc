@@ -61,7 +61,7 @@ defaultproperties
 		Scale=0.18
 	End Object
 	
-	RespawnTime=5.0
+	RespawnTime=10.0
 	AmmoRechargeAmount=1000
 	PickupSound=SoundCue'DV_Sound.Gameplay.A_Heal'
 }
