@@ -297,11 +297,11 @@ defaultProperties
 	Begin Object class=PointLightComponent name=FlagLightComponent
 		Brightness=1.5
 		LightColor=(R=10,G=255,B=0)
-		Translation=(X=-40.0,Y=0.0,Z=240.0)
+		Translation=(X=-40.0,Y=0.0,Z=-45.0)
 		Radius=500.0
 		bEnabled=true
 		CastShadows=true
-		bRenderLightShafts=true
+		bRenderLightShafts=false
 		LightingChannels=(Dynamic=true,CompositeDynamic=true)
 	End Object
 	FlagLight=FlagLightComponent
