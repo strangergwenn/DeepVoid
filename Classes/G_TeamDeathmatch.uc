@@ -40,6 +40,7 @@ defaultproperties
 	DefaultAddonList(6)=class'WA_RedDot'
 	DefaultAddonList(7)=class'WA_SniperSight'
 	DefaultAddonList(8)=class'WA_IronSight'
+	DefaultAddonList(9)=class'WA_Torchlight'
 	
 	// Weapon icons (forbid optimizing out the textures)
 	DefaultIconList(0)=Material'DV_Weapons.Icon.T_W_Rifle_Mat'
