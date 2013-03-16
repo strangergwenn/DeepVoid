@@ -66,7 +66,7 @@ defaultproperties
 	// Mesh
 	Begin Object Name=WeaponMesh
 		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_Shotgun'
-		Translation=(X=3.0, Y=-2.0, Z=2.0)
+		Translation=(X=4.0, Y=-2.5, Z=1.0)
 		Scale=0.95
 	End Object
 	Mesh=WeaponMesh

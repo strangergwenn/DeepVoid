@@ -17,7 +17,7 @@ defaultproperties
 	// Mesh
 	Begin Object Name=WeaponMesh
 		SkeletalMesh=SkeletalMesh'DV_Weapons.Mesh.SK_SniperRifle'
-		Translation=(X=3.0, Y=-2.0, Z=-0.5)
+		Translation=(X=3.0, Y=-2.0, Z=1.0)
 		Scale=0.95
 	End Object
 	Mesh=WeaponMesh

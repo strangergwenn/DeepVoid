@@ -123,6 +123,12 @@ simulated function Tick(float DeltaTime)
 			}
 		}
 	}
+
+	else if (OwnedFlag == None)
+	{
+		`log("AFB > Flag respawn on error" @self);
+		SpawnFlag();
+	}
 }
 
 
