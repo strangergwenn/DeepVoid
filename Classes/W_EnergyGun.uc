@@ -78,6 +78,10 @@ simulated function Tick(float DeltaTime)
 				{
 					ImpactPosition = Impact;
 					bForceNetUpdate = true;
+					if (WorldInfo.NetMode == NM_Standalone)
+					{
+						PlayFiringEffects(ImpactPosition);
+					}
 				}
 			}
 		}
