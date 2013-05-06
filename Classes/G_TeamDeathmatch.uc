@@ -17,7 +17,7 @@ defaultproperties
 	// Config
 	MaxScore=50
 	PointsForKill=1
-	RestartTimer=10.0
+	RestartTimer=5.0
 	SpawnProtectTime=5.0
 	DefaultPawnClass=class'P_Pawn'
 	

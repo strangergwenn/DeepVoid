@@ -217,8 +217,9 @@ simulated function Drop(Controller OldOwner)
 simulated function Tick(float DeltaTime)
 {
 	// Weapon adjustment
-	if (Location.Z < WorldInfo.KillZ + 1000.0)
+	if (Location.Z < WorldInfo.KillZ + 150.0)
 	{
+		`log("AF > Idiot just suicided withn the flag" @self);
 		A_FlagBase(HomeBase).FlagReturned();
 		Destroy();
 	}
@@ -281,6 +282,7 @@ defaultProperties
 	bStatic=false
  	bHardAttach=true
 	bCollideActors=true
+	bBlockActors=false
 	bIsReturnable=false
 	AutoReturnTime=20.0
 	RedTeamColor=(R=200,G=50,B=20)
@@ -316,8 +318,8 @@ defaultProperties
 	// Mesh
 	Begin Object Class=StaticMeshComponent Name=TheFlagMesh
 		BlockActors=false
-		CollideActors=false
-		BlockRigidBody=true
+		CollideActors=true
+		BlockRigidBody=false
 		scale=0.4
 		Translation=(X=-40.0,Y=0.0,Z=-45.0)
 		LightEnvironment=FlagLightEnvironment
