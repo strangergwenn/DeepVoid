@@ -33,7 +33,7 @@ defaultproperties
 	
     bCollideWorld=true
 
-	CurveScaling=0.5
+	CurveScaling=1.0
     Damage=45
     DamageRadius=300
     Speed=4000

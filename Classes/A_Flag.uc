@@ -91,6 +91,7 @@ function PostBeginPlay()
 /*--- Set the flag data server-side ---*/
 reliable server simulated function SetFlagData(byte Index, A_FlagBase FlagParent)
 {
+	`log("AF > SetFlagData" @self);
 	TeamIndex = Index;
 	HomeBase = FlagParent;
 	LightColor = (TeamIndex == 0) ? RedTeamColor : BlueTeamColor;
@@ -100,12 +101,12 @@ reliable server simulated function SetFlagData(byte Index, A_FlagBase FlagParent
 		TeamMaterial.SetVectorParameterValue('Light', MaterialLight);
 		ClientSetFlagData();
 	}
-	`log("AF > SetFlagData" @self);
 }
 
 /*--- Set the flag data client-side---*/
 reliable client simulated function ClientSetFlagData()
 {
+	`log("AF > ClientSetFlagData" @self);
 	FlagLight.SetLightProperties(
 		FlagLight.Brightness,
 		LightColor
@@ -123,7 +124,6 @@ reliable client simulated function ClientSetFlagData()
 			TeamMaterial.SetParent(TeamMaterials[TeamIndex]);
 		}
 	}
-	`log("AF > ClientSetFlagData" @self);
 }
 
 
@@ -144,7 +144,7 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	if (P_Pawn(Other) == None)
 		return;
 	PP = P_Pawn(Other);
-	if (PP.PlayerReplicationInfo == None)
+	if (PP.Controller.PlayerReplicationInfo == None)
 	{
 		`log("AF > No PR for pawn" @self);
 		return;
@@ -156,10 +156,10 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	}
 
 	// Friendly touch : return
-	if (TeamIndex == DVPlayerRepInfo(PP.PlayerReplicationInfo).Team.TeamIndex)
+	if (TeamIndex == DVPlayerRepInfo(PP.Controller.PlayerReplicationInfo).Team.TeamIndex)
 	{
 		A_FlagBase(HomeBase).FlagReturned();
-		`log("AF > Return" @self);
+		`log("AF > Returned" @self);
 		Destroy();
 	}
 	
@@ -168,7 +168,7 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	{
 		//TODO trigger sound
 		AttachFlag(PP);
-		`log("AF > Retake" @self);
+		`log("AF > Retaken" @self);
 	}
 	bIsReturnable = false;
 	bForceNetUpdate = true;
@@ -178,6 +178,7 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 /*--- Get the flag ---*/
 reliable server simulated function AttachFlag(P_Pawn PP)
 {
+	`log("AF > AttachFlag" @self);
 	SetBase(PP);
 	PP.EnemyFlag = self;
 	SetHolder(PP);
@@ -193,6 +194,7 @@ reliable server simulated function AttachFlag(P_Pawn PP)
 /*--- Drop the flag ---*/
 simulated function Drop(Controller OldOwner)
 {
+	`log("AF > Drop" @self);
 	bTaken = false;
 	bIsReturnable = true;
 	bCollideWorld = true;
@@ -200,16 +202,11 @@ simulated function Drop(Controller OldOwner)
 	ServerLogAction("FDROP");
 	
 	SetBase(None);
-	SetCollisionSize(0.75 * DefaultRadius, DefaultHeight);
-	SetCollisionType(COLLIDE_BlockAll);
-	SetCollision(true, false);
 	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
 	
 	SetPhysics(PHYS_Falling);
 	Velocity = 100.0 * VRand();
 	Velocity.Z += 300.0;
-	
-	`log("AF > Drop" @self);
 }
 
 
