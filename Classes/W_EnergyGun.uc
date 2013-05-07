@@ -225,7 +225,7 @@ defaultproperties
 
 	// Recoil
 	MaxSpread=0.0
-	RecoilAngle=200
+	RecoilAngle=100
 	
 	// Weaponry
 	MuzzleFlashLightClass=class'DeepVoid.EL_Plasma'

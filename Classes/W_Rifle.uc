@@ -39,7 +39,7 @@ defaultproperties
 	MinSpread=0.01
 	MaxSpread=0.05
 	SpreadTime=2.0
-	RecoilAngle=70
+	RecoilAngle=50
 	
 	// Weaponry
 	MuzzleFlashLightClass=class'DeepVoid.EL_Standard'

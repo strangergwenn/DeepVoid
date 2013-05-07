@@ -32,7 +32,7 @@ defaultproperties
 	ZoomedFOV=45
 
 	// Recoil
-	RecoilAngle=200
+	RecoilAngle=70
 	
 	// Interface
 	WeaponIconPath="DV_Weapons"
