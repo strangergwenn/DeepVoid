@@ -36,7 +36,7 @@ replication
 simulated event ReplicatedEvent(name VarName)
 {	
 	`log("DVEG > ReplicatedEvent" @VarName);
-	if (VarName == 'ImpactPosition')
+	if (VarName == 'ImpactPosition' && bReadyToFire)
 	{
 		PlayFiringEffectsActual(ImpactPosition);
 	}
@@ -63,7 +63,7 @@ simulated function Tick(float DeltaTime)
 	{
 		// Trace
 		SkeletalMeshComponent(Mesh).GetSocketWorldLocationAndRotation('Mount1', SL, SR);
-		if (DVPawn(Owner) != None)
+		if (DVPawn(Owner) != None && Role >= ROLE_Authority)
 		{
 			if (DVPlayerController(DVPawn(Owner).Controller) != None && bReadyToFire)
 			{
@@ -139,6 +139,7 @@ simulated function StopFire(byte FireModeNum)
 {
 	bSpinningUp = false;
 	bReadyToFire = false;
+	bForceNetUpdate = true;
 	ClearTimer('SpinnedUp');
 	super.StopFire(FireModeNum);
 }
@@ -161,7 +162,21 @@ reliable server simulated function ServerStopFire(byte FireModeNum)
 /*--- Plasma beam ---*/
 simulated function PlayFiringEffectsActual(vector HitLocation)
 {
-	//`log("DVEG > PlayFiringEffects" @HitLocation @self);
+	// Init
+	local DVPlayerController PC;
+	PC = DVPlayerController(DVPawn(Owner).Controller);
+
+	// Owner override
+	if (PC != None)
+	{
+		if (PC.CurrentAimWorld != Vect(0,0,0))
+		{
+			HitLocation = PC.CurrentAimWorld;
+		}
+	}
+	`log("DVEG > PlayFiringEffects" @HitLocation @self);
+
+	// FX sequence
 	if (!bWeaponEmpty)
 	{
 		if (MuzzleFlashPSC != None)
