@@ -38,7 +38,7 @@ simulated event ReplicatedEvent(name VarName)
 	`log("DVEG > ReplicatedEvent" @VarName);
 	if (VarName == 'ImpactPosition')
 	{
-		PlayFiringEffects(ImpactPosition);
+		PlayFiringEffectsActual(ImpactPosition);
 	}
 	else
 	{
@@ -55,7 +55,7 @@ simulated event ReplicatedEvent(name VarName)
 simulated function Tick(float DeltaTime)
 {
 	// Init
-	local vector Impact, SL, Unused;
+	local vector Impact, SL, Unused, Destination;
 	local rotator SR;
 	FrameCount += 1;
 	
@@ -65,23 +65,30 @@ simulated function Tick(float DeltaTime)
 		SkeletalMeshComponent(Mesh).GetSocketWorldLocationAndRotation('Mount1', SL, SR);
 		if (DVPawn(Owner) != None)
 		{
-			if (DVPlayerController(DVPawn(Owner).Controller) != None)
+			if (DVPlayerController(DVPawn(Owner).Controller) != None && bReadyToFire)
 			{
+				Destination = SL + vector(SR) * 10000.0;
 				DVPlayerController(DVPawn(Owner).Controller).TargetObject = Trace(
 					Impact,
 					Unused,
-					SL + vector(SR) * 10000.0,
+					Destination,
 					SL,
 					true,,, TRACEFLAG_Bullet
 				);
-				if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None && bReadyToFire)
+
+				if (DVPlayerController(DVPawn(Owner).Controller).TargetObject != None)
 				{
 					ImpactPosition = Impact;
-					bForceNetUpdate = true;
-					if (WorldInfo.NetMode == NM_Standalone)
-					{
-						PlayFiringEffects(ImpactPosition);
-					}
+				}
+				else
+				{
+					ImpactPosition = Destination;
+				}
+
+				bForceNetUpdate = true;
+				if (WorldInfo.NetMode == NM_Standalone)
+				{
+					PlayFiringEffectsActual(ImpactPosition);
 				}
 			}
 		}
@@ -92,7 +99,8 @@ simulated function Tick(float DeltaTime)
 /*--- Launch spinup ---*/
 simulated function BeginFire(byte FireModeNum)
 {
-	`log("DVEG > BeginFire" @self);
+	ImpactPosition = Vect(0,0,0);
+	bForceNetUpdate = true;
 	if (FireModeNum == 1 || bReadyToFire)
 	{
 		super.BeginFire(FireModeNum);
@@ -118,7 +126,9 @@ simulated function SpinnedUp()
 	{
 		PlaySound(ReadySound, false, true, false, Owner.Location);
 	}
-	
+
+	ImpactPosition = Vect(0,0,0);
+	bForceNetUpdate = true;
 	bReadyToFire = true;
 	BeginFire(0);
 }
@@ -127,7 +137,6 @@ simulated function SpinnedUp()
 /*--- Fire ended ---*/
 simulated function StopFire(byte FireModeNum)
 {
-	`log("DVEG > StopFire" @self);
 	bSpinningUp = false;
 	bReadyToFire = false;
 	ClearTimer('SpinnedUp');
@@ -138,7 +147,6 @@ simulated function StopFire(byte FireModeNum)
 /*--- Fire ended ---*/
 reliable server simulated function ServerStopFire(byte FireModeNum)
 {
-	`log("DVEG > ServerStopFire" @self);
 	bSpinningUp = false;
 	bReadyToFire = false;
 	ClearTimer('SpinnedUp');
@@ -147,13 +155,13 @@ reliable server simulated function ServerStopFire(byte FireModeNum)
 
 
 /*----------------------------------------------------------
-	Firing effect
+	Firing effects
 ----------------------------------------------------------*/
 
-/*--- Muzzle flash ---*/
-simulated function PlayFiringEffects(vector HitLocation)
+/*--- Plasma beam ---*/
+simulated function PlayFiringEffectsActual(vector HitLocation)
 {
-	`log("DVEG > PlayFiringEffects" @self);
+	//`log("DVEG > PlayFiringEffects" @HitLocation @self);
 	if (!bWeaponEmpty)
 	{
 		if (MuzzleFlashPSC != None)
@@ -163,17 +171,17 @@ simulated function PlayFiringEffects(vector HitLocation)
 			ImpactPosition = HitLocation;
 		}
 		CauseMuzzleFlash();
+		super.PlayImpactEffects(HitLocation);
 	}
 }
 
-/*--- Muzzle flash ---*/
+/*--- Disabled ---*/
+simulated function PlayFiringEffects(vector HitLocation)
+{}
+
+/*--- Disabled ---*/
 simulated function PlayImpactEffects(vector HitLocation)
-{
-	super.PlayImpactEffects(HitLocation);
-	`log("DVEG > PlayImpactEffects" @self);
-	ImpactPosition = HitLocation;
-	bForceNetUpdate = true;
-}
+{}
 
 
 /*----------------------------------------------------------
@@ -195,7 +203,7 @@ defaultproperties
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_PlasmaShot'
 	
 	// Plasma
-	ImpactEffect=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Impact')
+	ImpactEffect=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_ImpactPlasma')
 	MuzzleFlashPSCTemplate=ParticleSystem'DV_CoreEffects.FX.PS_PlasmaBeam'
 	SpinupSound=SoundCue'DV_Sound.Weapons.A_PlasmaSpinup'
 	ReadySound=SoundCue'DV_Sound.Weapons.A_Empty'
@@ -212,7 +220,7 @@ defaultproperties
 	SmoothingFactor=0.5
 	SpinupTime=1.0
 	Spread(0)=0.0
-	MaxAmmo=20
+	MaxAmmo=30
 	bLongRail=true
 	bCannonMount=false
 }
