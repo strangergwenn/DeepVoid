@@ -24,8 +24,6 @@ var (DVEG) const float 				SpinupTime;
 
 var bool							bReadyToFire;
 var bool							bSpinningUp;
-var vector							Impact;
-var vector							TargetAim;
 
 var repnotify vector				ImpactPosition;
 
@@ -34,10 +32,6 @@ replication
 	if (bNetDirty)
 		bReadyToFire, bSpinningUp, ImpactPosition;
 }
-
-// REPLICATION NOTICE
-// This class is very ugly and disfonctionnal with remains of various methods
-// Do not try this at home
 
 simulated event ReplicatedEvent(name VarName)
 {	
@@ -61,7 +55,7 @@ simulated event ReplicatedEvent(name VarName)
 simulated function Tick(float DeltaTime)
 {
 	// Init
-	local vector SL, Unused;
+	local vector Impact, SL, Unused;
 	local rotator SR;
 	FrameCount += 1;
 	
@@ -73,11 +67,10 @@ simulated function Tick(float DeltaTime)
 		{
 			if (DVPlayerController(DVPawn(Owner).Controller) != None)
 			{
-				TargetAim = SL + vector(SR) * 100000.0;
 				DVPlayerController(DVPawn(Owner).Controller).TargetObject = Trace(
 					Impact,
 					Unused,
-					TargetAim,
+					SL + vector(SR) * 10000.0,
 					SL,
 					true,,, TRACEFLAG_Bullet
 				);
@@ -160,18 +153,12 @@ reliable server simulated function ServerStopFire(byte FireModeNum)
 /*--- Muzzle flash ---*/
 simulated function PlayFiringEffects(vector HitLocation)
 {
+	`log("DVEG > PlayFiringEffects" @self);
 	if (!bWeaponEmpty)
 	{
 		if (MuzzleFlashPSC != None)
 		{
-			if (Impact != vect(0,0,0))
-			{
-				MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', Impact);
-			}
-			else
-			{
-				MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', TargetAim);
-			}
+			MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
 			MuzzleFlashPSC.ActivateSystem();
 			ImpactPosition = HitLocation;
 		}
