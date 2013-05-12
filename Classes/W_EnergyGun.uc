@@ -32,33 +32,33 @@ replication
 	if (bNetDirty)
 		bReadyToFire, bSpinningUp, ImpactPosition;
 }
-
-simulated event ReplicatedEvent(name VarName)
-{	
-	`log("DVEG > ReplicatedEvent" @VarName);
-	if (VarName == 'ImpactPosition' && bReadyToFire)
-	{
-		PlayFiringEffectsActual(ImpactPosition);
-	}
-	else
-	{
-		Super.ReplicatedEvent(VarName);
-	}
-}
+//
+//simulated event ReplicatedEvent(name VarName)
+//{
+//	`log("DVEG > ReplicatedEvent" @VarName);
+//	if (VarName == 'ImpactPosition')
+//	{
+//		DrawDebugSphere(ImpactPosition, 8, 10, 255, 0, 0, true);
+//		PlayFiringEffectsActual(ImpactPosition);
+//	}
+//	else
+//	{
+//		Super.ReplicatedEvent(VarName);
+//	}
+//}
 
 
 /*----------------------------------------------------------
 	Firing management
 ----------------------------------------------------------*/
 
-/*--- Target designation --*/
+/*--- Target designation --*
 simulated function Tick(float DeltaTime)
 {
 	// Init
 	local vector Impact, SL, Unused, Destination;
 	local rotator SR;
 	FrameCount += 1;
-	
 	if (Owner != None)
 	{
 		// Trace
@@ -93,14 +93,12 @@ simulated function Tick(float DeltaTime)
 			}
 		}
 	}
-}
+}*/
 
 
 /*--- Launch spinup ---*/
 simulated function BeginFire(byte FireModeNum)
 {
-	ImpactPosition = Vect(0,0,0);
-	bForceNetUpdate = true;
 	if (FireModeNum == 1 || bReadyToFire)
 	{
 		super.BeginFire(FireModeNum);
@@ -162,41 +160,64 @@ reliable server simulated function ServerStopFire(byte FireModeNum)
 /*--- Plasma beam ---*/
 simulated function PlayFiringEffectsActual(vector HitLocation)
 {
-	// Init
-	local DVPlayerController PC;
-	PC = DVPlayerController(DVPawn(Owner).Controller);
-
 	// Owner override
-	if (PC != None)
+	local DVPlayerController PC;
+	if (Owner != None)
 	{
-		if (PC.CurrentAimWorld != Vect(0,0,0))
+		PC = DVPlayerController(DVPawn(Owner).Controller);
+		if (PC != None)
 		{
-			HitLocation = PC.CurrentAimWorld;
+			if (PC.CurrentAimWorld != Vect(0,0,0))
+			{
+				HitLocation = PC.CurrentAimWorld;
+			}
 		}
 	}
 	`log("DVEG > PlayFiringEffects" @HitLocation @self);
+	DrawDebugSphere(HitLocation, 10, 12, 255, 255, 255, true);
 
 	// FX sequence
 	if (!bWeaponEmpty)
 	{
 		if (MuzzleFlashPSC != None)
 		{
-			MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
-			MuzzleFlashPSC.ActivateSystem();
+			//MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
+			//MuzzleFlashPSC.ActivateSystem();
 			ImpactPosition = HitLocation;
 		}
 		CauseMuzzleFlash();
-		super.PlayImpactEffects(HitLocation);
+		//super.PlayImpactEffects(HitLocation);
 	}
 }
 
-/*--- Disabled ---*/
-simulated function PlayFiringEffects(vector HitLocation)
-{}
 
 /*--- Disabled ---*/
+simulated function PlayFiringEffects(vector HitLocation)
+{
+}
+
+
+/*--- Clientside effects ---*/
 simulated function PlayImpactEffects(vector HitLocation)
-{}
+{
+	Super.PlayImpactEffects(HitLocation);
+
+	if (MuzzleFlashPSC != None)
+	{
+		MuzzleFlashPSC = new(Outer) class'ParticleSystemComponent';
+		MuzzleFlashPSC.bAutoActivate = false;
+		MuzzleFlashPSC.bUpdateComponentInTick = true;
+		MuzzleFlashPSC.SetTickGroup(TG_EffectsUpdateWork);
+		MuzzleFlashPSC.SetTemplate(MuzzleFlashPSCTemplate);
+		SkeletalMeshComponent(Mesh).AttachComponentToSocket(MuzzleFlashPSC, EffectSockets[0]);
+	}
+
+	if (MuzzleFlashPSC != None)
+	{
+		MuzzleFlashPSC.SetVectorParameter('ShockBeamEnd', HitLocation);
+		MuzzleFlashPSC.ActivateSystem();
+	}
+}
 
 
 /*----------------------------------------------------------
@@ -230,7 +251,7 @@ defaultproperties
 	// Weaponry
 	MuzzleFlashLightClass=class'DeepVoid.EL_Plasma'
 	InstantHitMomentum(0)=40000.0
-	InstantHitDamage(0)=40.0
+	InstantHitDamage(0)=50.0
 	FireInterval(0)=0.33
 	SmoothingFactor=0.5
 	SpinupTime=1.0
