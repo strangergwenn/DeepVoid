@@ -24,6 +24,7 @@ defaultproperties
 	
 	// Settings
 	ImpactEffect=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Impact')
+	ImpactEffectDyn=(MaterialType=Water, ParticleTemplate=ParticleSystem'DV_CoreEffects.FX.PS_ImpactDyn')
 	WeaponFireSnd[0]=SoundCue'DV_Sound.Weapons.A_SniperShot'
 	WeaponEmptySound=SoundCue'DV_Sound.Weapons.A_Empty'
 	SilencedWeaponSound=SoundCue'DV_Sound.Weapons.A_SniperShotSilenced'
