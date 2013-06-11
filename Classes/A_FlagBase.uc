@@ -50,7 +50,12 @@ replication
 simulated function PostBeginPlay()
 {
 	super.PostBeginPlay();
-	SpawnFlag();
+
+	// CTF specific
+	if (G_CaptureTheFlag(WorldInfo.Game) != None)
+	{
+		SpawnFlag();
+	}
 }
 
 
@@ -84,6 +89,12 @@ simulated function Tick(float DeltaTime)
 	local P_Pawn P;
 	CurrentPeriod -= DeltaTime;
 	
+	// CTF specific
+	if (G_CaptureTheFlag(WorldInfo.Game) == None)
+	{
+		return;
+	}
+
 	if (CurrentPeriod <= 0 && bHasFlag)
 	{
 		CurrentPeriod = DetectionPeriod;

@@ -14,8 +14,6 @@ class KA_Cannister extends KActor
 	Public attributes
 ----------------------------------------------------------*/
 
-var (Cannister) const bool					bFixedPos;
-
 var (Cannister) const int					MaxBurns;
 
 var (Cannister) const float					BurnTime;
@@ -23,7 +21,7 @@ var (Cannister) const float					BurnStrength;
 
 var (Cannister) const vector				BurnOrigin;
 
-var (Cannister) const rotator				BurnRotation;
+var (Cannister) const SoundCue				BurnSound;
 
 
 /*----------------------------------------------------------
@@ -46,19 +44,16 @@ simulated event TakeDamage(int Damage, Controller InstigatedBy, vector HitLocati
 {
 	Super.TakeDamage(Damage, InstigatedBy, HitLocation, Momentum, DamageType, HitInfo, DamageCauser);
 
-	// Fixed position
-	if (!bPhysBurning && bFixedPos && Burns < MaxBurns)
+	if (!bPhysBurning && Burns < MaxBurns)
 	{
+		if (BurnSound != None)
+		{
+			PlaySound(BurnSound, false, true, false, Location);
+		}
 		SetTimer(BurnTime, false, 'BurnOut');
 		Fire.ActivateSystem();
 		bPhysBurning = true;
 		Burns ++;
-	}
-
-	// Hit-dependant position
-	else
-	{
-		// TODO
 	}
 }
 
@@ -100,16 +95,10 @@ defaultProperties
 	Fire=FireFX
 
 	// Behaviour
-	bFixedPos=true
 	bWakeOnLevelStart=false
 	bEnableStayUprightSpring=false
-	StayUprightTorqueFactor=50.0
-	StayUprightMaxTorque=500.0
-
-	// Burning
-	BurnRotation=(Pitch=16384)
 	BurnOrigin=(Z=75)
-	BurnStrength=50.0
+	BurnStrength=40.0
 	BurnTime=3.0
-	MaxBurns=10
+	MaxBurns=1
 }
