@@ -87,7 +87,7 @@ defaultProperties
 {
 	// Mesh
 	Begin Object Class=ParticleSystemComponent Name=FireFX
-		Template=ParticleSystem'DV_CoreEffects.FX.PS_GasFire'
+		Template=ParticleSystem'DV_CoreEffects_FX.FX.PS_GasFire'
 		Translation=(Z=75)
 		bAutoActivate=false
 	End Object
