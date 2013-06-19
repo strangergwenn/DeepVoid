@@ -29,7 +29,7 @@ defaultproperties
 	ProjFlightTemplate=ParticleSystem'VH_Manta.Effects.PS_Manta_Projectile'
 	ProjExplosionTemplate=ParticleSystem'DV_CoreEffects.FX.PS_Detonation'
 	ExplosionSound=SoundCue'DV_Sound.Impacts.A_Impact_Grenade'
-    MyDamageType=class'DamageType'
+    MyDamageType=class'DVDamage'
 	
     bCollideWorld=true
 
