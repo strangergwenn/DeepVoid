@@ -18,7 +18,6 @@ defaultproperties
 	MaxScore=50
 	PointsForKill=1
 	RestartTimer=5.0
-	SpawnProtectTime=5.0
 	DefaultPawnClass=class'P_Pawn'
 	
 	// Weapons (forbid optimizing out the classes)
