@@ -109,10 +109,10 @@ reliable server simulated function ServerBurnStart()
 	{
 		bPhysBurning = true;
 		Burns ++;
-	}
-	if (WorldInfo.NetMode == NM_StandAlone)
-	{
-		ClientBurnStart();
+		if (WorldInfo.NetMode == NM_StandAlone)
+		{
+			ClientBurnStart();
+		}
 	}
 }
 
@@ -165,6 +165,7 @@ defaultProperties
 	End Object
 	Components.Add(FireFX)
 	Fire=FireFX
+	BurnSound=SoundCue'DV_Ambient_L03.A_GazFire'
 
 	// Behaviour
 	bWakeOnLevelStart=false

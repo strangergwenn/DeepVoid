@@ -16,7 +16,7 @@ class IA_CentrifugeSound extends AmbientSoundMovable
 defaultProperties
 {
 	Begin Object Name=AudioComponent0
-			SoundCue=SoundCue'A_Vehicle_Raptor.SoundCues.A_Vehicle_Raptor_EngineLoop'
+			SoundCue=SoundCue'DV_Ambient_L03.A_Hugemachine'
 			bAutoPlay=true
 	End Object
 }
