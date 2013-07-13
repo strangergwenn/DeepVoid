@@ -154,7 +154,7 @@ defaultProperties
 	TravellingOrigin=(X=-6500,Z=600)
 
 	// Physics
-	RotationRate=(Yaw=1400)
+	RotationRate=(Yaw=1700)
 	Physics=PHYS_ROTATING
 	RemoteRole=ROLE_SimulatedProxy
 	CollisionType=COLLIDE_BlockAll

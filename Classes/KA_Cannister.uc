@@ -166,6 +166,7 @@ defaultProperties
 	Components.Add(FireFX)
 	Fire=FireFX
 	BurnSound=SoundCue'DV_Ambient_L03.A_GazFire'
+	BumpSound=SoundCue'DV_Ambient_L03.A_GazHit'
 
 	// Behaviour
 	bWakeOnLevelStart=false
