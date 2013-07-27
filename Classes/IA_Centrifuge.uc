@@ -150,7 +150,7 @@ defaultProperties
 	End Object
 
 	// Travelling
-	PawnCheckRadius=400.0
+	PawnCheckRadius=350.0
 	TravellingOrigin=(X=-6500,Z=600)
 
 	// Physics

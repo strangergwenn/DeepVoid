@@ -54,6 +54,7 @@ simulated function PostBeginPlay()
 	// CTF specific
 	if (G_CaptureTheFlag(WorldInfo.Game) != None)
 	{
+		`log("AF > PostBeginPlay" @self);
 		SpawnFlag();
 	}
 }

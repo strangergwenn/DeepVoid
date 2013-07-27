@@ -226,6 +226,7 @@ simulated function Tick(float DeltaTime)
 /*-- Return when dropped for too long ---*/
 simulated function ReturnOnTimeOut()
 {
+	`log("AF > ReturnOnTimeOut" @self);
 	A_FlagBase(HomeBase).FlagReturned();
 	Destroy();
 }
