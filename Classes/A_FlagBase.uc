@@ -20,6 +20,8 @@ var (Flag) const float 			DetectionPeriod;
 
 var (Flag) const byte 			TeamIndex;
 
+var (Flag) bool					bHasFlag;
+
 
 /*----------------------------------------------------------
 	Private attributes
@@ -27,18 +29,14 @@ var (Flag) const byte 			TeamIndex;
 
 var StaticMeshComponent			Mesh;
 
-var DVPawn						OldPawn;
-
 var A_Flag						OwnedFlag;
 
 var float 						CurrentPeriod;
 
-var bool						bHasFlag;
-
 replication
 {
 	if (bNetDirty)
-		TeamIndex, Mesh, bHasFlag, OwnedFlag, OldPawn;
+		TeamIndex, Mesh, bHasFlag, OwnedFlag;
 }
 
 
@@ -65,11 +63,10 @@ simulated function SpawnFlag()
 {
 	if (Role >= ROLE_Authority && G_CaptureTheFlag(WorldInfo.Game) != None)
 	{
-		OldPawn = None;
-		bHasFlag = true;
 		OwnedFlag = Spawn(class'A_Flag', self);
 		OwnedFlag.SetFlagData(TeamIndex, self);
 		`log("AFB > Flag spawned" @OwnedFlag @self);
+		bHasFlag = true;
 	}
 }
 
@@ -103,16 +100,11 @@ simulated function Tick(float DeltaTime)
 		foreach AllActors(class'P_Pawn', P)
 		{
 			// Detection condition
-			if (VSize(P.Location - Location) < DetectionDistance && P != OldPawn)
+			if (VSize(P.Location - Location) < DetectionDistance)
 			{
 				// Flag take
 				if (TeamIndex != DVPlayerRepInfo(P.PlayerReplicationInfo).Team.TeamIndex)
 				{
-					OldPawn = P;
-					if (WorldInfo.NetMode == NM_DedicatedServer)
-					{
-						G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
-					}
 					`log("AFB > Flag take" @OwnedFlag @self);
 					OwnedFlag.AttachFlag(P);
 					bHasFlag = false;
@@ -131,6 +123,12 @@ simulated function Tick(float DeltaTime)
 					P.EnemyFlag.SkelMesh.DetachFromAny();
 					P.EnemyFlag.Destroy();
 					P.EnemyFlag = None;
+				}
+
+				// Nothing
+				else
+				{
+					`log("AFB > Neutral pawn" @P @self);
 				}
 			}
 		}

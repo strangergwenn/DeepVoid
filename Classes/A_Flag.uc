@@ -85,6 +85,7 @@ function PostBeginPlay()
 		DefaultHeight = CylinderComponent(CollisionComponent).CollisionHeight;
 	}
 	SetTimer(1.0, true, 'PosTimer');
+	bIsReturnable = false;
 }
 
 
@@ -102,6 +103,7 @@ reliable server simulated function SetFlagData(byte Index, A_FlagBase FlagParent
 		ClientSetFlagData();
 	}
 }
+
 
 /*--- Set the flag data client-side---*/
 reliable client simulated function ClientSetFlagData()
@@ -142,36 +144,37 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 	
 	// Only valid touches are accepted
 	if (P_Pawn(Other) == None)
+	{
 		return;
+	}
 	PP = P_Pawn(Other);
 	if (PP.Controller.PlayerReplicationInfo == None)
 	{
 		`log("AF > No PR for pawn" @self);
-		return;
 	}
-	if (!bIsReturnable)
+
+	// Touched when carried or in base
+	else if (!bIsReturnable || Holder != None || A_FlagBase(Owner).bHasFlag)
 	{
 		`log("AF > Not returnable !" @self);
-		return;
 	}
 
 	// Friendly touch : return
-	if (TeamIndex == DVPlayerRepInfo(PP.Controller.PlayerReplicationInfo).Team.TeamIndex)
+	else if (TeamIndex == DVPlayerRepInfo(PP.Controller.PlayerReplicationInfo).Team.TeamIndex)
 	{
 		A_FlagBase(HomeBase).FlagReturned();
 		`log("AF > Returned" @self);
 		Destroy();
 	}
 	
-	// Or... Retake
-	else
+	// Enemy touch : retake
+	else if (!A_FlagBase(Owner).bHasFlag)
 	{
-		//TODO trigger sound
 		AttachFlag(PP);
+		bIsReturnable = false;
+		bForceNetUpdate = true;
 		`log("AF > Retaken" @self);
 	}
-	bIsReturnable = false;
-	bForceNetUpdate = true;
 }
 
 
@@ -184,9 +187,12 @@ reliable server simulated function AttachFlag(P_Pawn PP)
 	SetHolder(PP);
 	
 	if (WorldInfo.NetMode == NM_DedicatedServer)
+	{
 		G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
+	}
 	
 	bTaken = true;
+	bIsReturnable = false;
 	bForceNetUpdate = true;
 }
 
@@ -200,6 +206,7 @@ simulated function Drop(Controller OldOwner)
 	bCollideWorld = true;
 	bForceNetUpdate = true;
 	ServerLogAction("FDROP");
+	Holder = None;
 	
 	SetBase(None);
 	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
@@ -216,12 +223,13 @@ simulated function Tick(float DeltaTime)
 	// Weapon adjustment
 	if (Location.Z < WorldInfo.KillZ + 150.0)
 	{
-		`log("AF > Idiot just suicided withn the flag" @self);
+		`log("AF > Idiot just suicided with the flag" @self);
 		A_FlagBase(HomeBase).FlagReturned();
 		Destroy();
 	}
 	super.Tick(DeltaTime);
 }
+
 
 /*-- Return when dropped for too long ---*/
 simulated function ReturnOnTimeOut()
@@ -230,6 +238,7 @@ simulated function ReturnOnTimeOut()
 	A_FlagBase(HomeBase).FlagReturned();
 	Destroy();
 }
+
 
 /*--- Position tick ---*/
 simulated function PosTimer()
