@@ -36,7 +36,7 @@ var MaterialInstanceConstant			TeamMaterial;
 
 var byte 								TeamIndex;
 
-var bool								bTaken;
+var bool								bCarried;
 var bool								bIsReturnable;
 
 var float								DefaultRadius;
@@ -50,7 +50,7 @@ var float								DefaultHeight;
 replication
 {
 	if (bNetDirty)
-		Holder, TeamIndex, bIsReturnable, LightColor;
+		Holder, TeamIndex, bCarried, bIsReturnable, LightColor;
 }
 
 simulated event ReplicatedEvent(name VarName)
@@ -70,7 +70,7 @@ simulated event ReplicatedEvent(name VarName)
 
 
 /*----------------------------------------------------------
-	Methods
+	Spawn and network methods
 ----------------------------------------------------------*/
 
 /*--- Startup ---*/
@@ -84,7 +84,8 @@ function PostBeginPlay()
 		DefaultRadius = CylinderComponent(CollisionComponent).CollisionRadius;
 		DefaultHeight = CylinderComponent(CollisionComponent).CollisionHeight;
 	}
-	SetTimer(1.0, true, 'PosTimer');
+
+	bCarried = false;
 	bIsReturnable = false;
 }
 
@@ -109,15 +110,14 @@ reliable server simulated function SetFlagData(byte Index, A_FlagBase FlagParent
 reliable client simulated function ClientSetFlagData()
 {
 	`log("AF > ClientSetFlagData" @self);
-	FlagLight.SetLightProperties(
-		FlagLight.Brightness,
-		LightColor
-	);
+	FlagLight.SetLightProperties(FlagLight.Brightness, LightColor);
+
 	if (TeamMaterial != None)
 	{
 		MaterialLight = ColorToLinearColor(LightColor);
 		TeamMaterial.SetVectorParameterValue('Light', MaterialLight);
 	}
+
 	if (TeamMaterials[TeamIndex] != None)
 	{
 		TeamMaterial = Mesh.CreateAndSetMaterialInstanceConstant(0);
@@ -129,91 +129,71 @@ reliable client simulated function ClientSetFlagData()
 }
 
 
-/*--- Set holder ---*/
-simulated function SetHolder(P_Pawn NewHolder)
-{
-	Holder = NewHolder;
-}
-
+/*----------------------------------------------------------
+	Game methods
+----------------------------------------------------------*/
 
 /*--- Return the flag or retake it ---*/
 event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vector HitNormal)
 {
 	local P_Pawn PP;
-	`log("AF > Touch" @self);
-	
-	// Only valid touches are accepted
-	if (P_Pawn(Other) == None)
+	if (P_Pawn(Other) != None)
 	{
-		return;
-	}
-	PP = P_Pawn(Other);
-	if (PP.Controller.PlayerReplicationInfo == None)
-	{
-		`log("AF > No PR for pawn" @self);
-	}
+		PP = P_Pawn(Other);
+		if (PP != Holder && PP.Controller.PlayerReplicationInfo != None)
+		{
+			// Flag on the ground
+			if (bIsReturnable)
+			{
+				// Return
+				if (TeamIndex == DVPlayerRepInfo(PP.Controller.PlayerReplicationInfo).Team.TeamIndex)
+				{
+					`log("AF > Returned" @self);
+					A_FlagBase(HomeBase).FlagReturned();
+					Destroy();
+				}
 
-	// Touched when carried or in base
-	else if (!bIsReturnable || Holder != None || A_FlagBase(Owner).bHasFlag)
-	{
-		`log("AF > Not returnable !" @self);
-	}
+				// Retake
+				else
+				{
+					`log("AF > Retaken" @self);
+					AttachFlag(PP);
+				}
 
-	// Friendly touch : return
-	else if (TeamIndex == DVPlayerRepInfo(PP.Controller.PlayerReplicationInfo).Team.TeamIndex)
-	{
-		A_FlagBase(HomeBase).FlagReturned();
-		`log("AF > Returned" @self);
-		Destroy();
-	}
-	
-	// Enemy touch : retake
-	else if (!A_FlagBase(Owner).bHasFlag)
-	{
-		AttachFlag(PP);
-		bIsReturnable = false;
-		bForceNetUpdate = true;
-		`log("AF > Retaken" @self);
+			}
+
+			// Flag at base
+			else if (!bCarried)
+			{
+				// Friendly touch : we could be capturing another flag
+				if (TeamIndex == DVPlayerRepInfo(PP.PlayerReplicationInfo).Team.TeamIndex)
+				{
+					if (PP.HasFlag())
+					{
+						PP.CaptureFlag();
+					}
+				}
+
+				// Enemy touch : take
+				else
+				{
+					`log("AF > Flag take" @self);
+					AttachFlag(PP);
+				}
+			}
+		}
 	}
 }
 
 
-/*--- Get the flag ---*/
-reliable server simulated function AttachFlag(P_Pawn PP)
+/*--- This flag was captured ---*/
+simulated function Captured()
 {
-	`log("AF > AttachFlag" @self);
-	SetBase(PP);
-	PP.EnemyFlag = self;
-	SetHolder(PP);
-	
-	if (WorldInfo.NetMode == NM_DedicatedServer)
-	{
-		G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
-	}
-	
-	bTaken = true;
-	bIsReturnable = false;
-	bForceNetUpdate = true;
-}
-
-
-/*--- Drop the flag ---*/
-simulated function Drop(Controller OldOwner)
-{
-	`log("AF > Drop" @self);
-	bTaken = false;
-	bIsReturnable = true;
-	bCollideWorld = true;
-	bForceNetUpdate = true;
-	ServerLogAction("FDROP");
-	Holder = None;
-	
+	`log("AF > Captured" @self);
+	A_FlagBase(HomeBase).FlagCaptured();
 	SetBase(None);
-	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
-	
-	SetPhysics(PHYS_Falling);
-	Velocity = 100.0 * VRand();
-	Velocity.Z += 300.0;
+	SkelMesh.DetachFromAny();
+	Destroy();
 }
 
 
@@ -231,22 +211,59 @@ simulated function Tick(float DeltaTime)
 }
 
 
+/*--- Set holder ---*/
+simulated function SetHolder(P_Pawn NewHolder)
+{
+	Holder = NewHolder;
+}
+
+
+/*--- Get the flag ---*/
+reliable server simulated function AttachFlag(P_Pawn PP)
+{
+	`log("AF > AttachFlag" @self);
+	SetBase(PP);
+	PP.EnemyFlag = self;
+	SetHolder(PP);
+	
+	if (WorldInfo.NetMode == NM_DedicatedServer)
+	{
+		G_CaptureTheFlag(WorldInfo.Game).FlagTaken(TeamIndex);
+	}
+
+	bCarried = true;
+	bIsReturnable = false;
+	bForceNetUpdate = true;
+}
+
+
+/*--- Drop the flag ---*/
+simulated function Drop(Controller OldOwner)
+{
+	`log("AF > Drop" @self);
+
+	bCarried = false;
+	bIsReturnable = true;
+	bCollideWorld = true;
+	bForceNetUpdate = true;
+
+	ServerLogAction("FDROP");
+	Holder = None;
+	SetBase(None);
+	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
+	
+	SetPhysics(PHYS_Falling);
+	Velocity = 100.0 * VRand();
+	Velocity.Z += 300.0;
+}
+
+
 /*-- Return when dropped for too long ---*/
 simulated function ReturnOnTimeOut()
 {
 	`log("AF > ReturnOnTimeOut" @self);
 	A_FlagBase(HomeBase).FlagReturned();
 	Destroy();
-}
-
-
-/*--- Position tick ---*/
-simulated function PosTimer()
-{
-	if (bTaken)
-	{
-		ServerLogAction("FPOS");
-	}
 }
 
 

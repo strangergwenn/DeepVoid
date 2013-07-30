@@ -15,12 +15,7 @@ class A_FlagBase extends UDKGameObjective
 	Public attributes
 ----------------------------------------------------------*/
 
-var (Flag) const float 			DetectionDistance;
-var (Flag) const float 			DetectionPeriod;
-
 var (Flag) const byte 			TeamIndex;
-
-var (Flag) bool					bHasFlag;
 
 
 /*----------------------------------------------------------
@@ -31,12 +26,10 @@ var StaticMeshComponent			Mesh;
 
 var A_Flag						OwnedFlag;
 
-var float 						CurrentPeriod;
-
 replication
 {
 	if (bNetDirty)
-		TeamIndex, Mesh, bHasFlag, OwnedFlag;
+		TeamIndex, Mesh, OwnedFlag;
 }
 
 
@@ -66,77 +59,54 @@ simulated function SpawnFlag()
 		OwnedFlag = Spawn(class'A_Flag', self);
 		OwnedFlag.SetFlagData(TeamIndex, self);
 		`log("AFB > Flag spawned" @OwnedFlag @self);
-		bHasFlag = true;
 	}
 }
 
 
-/*--- The flag was returned ---*/
+/*--- Our flag was returned ---*/
 simulated function FlagReturned()
 {
 	`log("AFB > Flag returned" @self);
 	if (WorldInfo.NetMode == NM_DedicatedServer)
+	{
 		G_CaptureTheFlag(WorldInfo.Game).FlagReturned(TeamIndex);
+	}
 	SpawnFlag();
 }
 
 
-/*--- Detection tick ---*/
+/*--- Our flag was captured ---*/
+simulated function FlagCaptured()
+{
+	`log("AFB > Flag captured" @self);
+	if (WorldInfo.NetMode == NM_DedicatedServer)
+	{
+		G_CaptureTheFlag(WorldInfo.Game).FlagCaptured(TeamIndex);
+	}
+	SpawnFlag();
+}
+
+
+/*--- Safety tick ---*/
 simulated function Tick(float DeltaTime)
 {
-	local P_Pawn P;
-	CurrentPeriod -= DeltaTime;
-	
-	// CTF specific
-	if (G_CaptureTheFlag(WorldInfo.Game) == None)
+	if (G_CaptureTheFlag(WorldInfo.Game) != None)
 	{
-		return;
-	}
-
-	if (CurrentPeriod <= 0 && bHasFlag)
-	{
-		CurrentPeriod = DetectionPeriod;
-		
-		foreach AllActors(class'P_Pawn', P)
+		if (OwnedFlag == None)
 		{
-			// Detection condition
-			if (VSize(P.Location - Location) < DetectionDistance)
-			{
-				// Flag take
-				if (TeamIndex != DVPlayerRepInfo(P.PlayerReplicationInfo).Team.TeamIndex)
-				{
-					`log("AFB > Flag take" @OwnedFlag @self);
-					OwnedFlag.AttachFlag(P);
-					bHasFlag = false;
-				}
-				
-				// Flag capture
-				else if (P.EnemyFlag != None)
-				{
-					if (WorldInfo.NetMode == NM_DedicatedServer)
-					{
-						G_CaptureTheFlag(WorldInfo.Game).FlagCaptured(P.EnemyFlag.TeamIndex);
-					}
-					`log("AFB > Flag capture" @P.EnemyFlag @self);
-					A_FlagBase(P.EnemyFlag.HomeBase).SpawnFlag();
-					P.EnemyFlag.SetBase(None);
-					P.EnemyFlag.SkelMesh.DetachFromAny();
-					P.EnemyFlag.Destroy();
-					P.EnemyFlag = None;
-				}
-
-				// Nothing
-				else
-				{
-					`log("AFB > Neutral pawn" @P @self);
-				}
-			}
+			SetTimer(3.0, false, 'CheckFlag');
+			`log("AFB > Flag respawn timer is started" @self);
 		}
 	}
+}
 
-	else if (OwnedFlag == None)
+
+/*--- Something went very wrong ---*/
+reliable server simulated function CheckFlag()
+{
+	if (OwnedFlag == None)
 	{
-		`log("AFB > Flag respawn on error" @self);
+		`log("AFB > Flag respawn on timeout" @self);
 		SpawnFlag();
 	}
 }
@@ -179,10 +149,6 @@ defaultProperties
 	CollisionComponent=GroundBase
 	Components.Add(GroundBase)
 	Mesh=GroundBase
-	
- 	// Gameplay
-	DetectionPeriod=0.25
-	DetectionDistance=200.0
 	
 	// Networking
 	bStatic=false

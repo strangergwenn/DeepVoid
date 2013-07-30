@@ -39,6 +39,20 @@ replication
 	Notifications
 ----------------------------------------------------------*/
 
+/*--- Has a flag ? ---*/
+reliable server simulated function bool HasFlag()
+{
+	return (EnemyFlag != None);
+}
+
+
+/*--- Has a flag ? ---*/
+reliable server simulated function CaptureFlag()
+{
+	EnemyFlag.Captured();
+}
+
+
 /*--- Server flag state event ---*/
 reliable server function ServerNotifyFlagState(int FlagState, byte TeamNumber)
 {
