@@ -36,7 +36,7 @@ replication
 
 
 /*----------------------------------------------------------
-	Notifications
+	Game methods
 ----------------------------------------------------------*/
 
 /*--- Has a flag ? ---*/
@@ -46,7 +46,7 @@ reliable server simulated function bool HasFlag()
 }
 
 
-/*--- Has a flag ? ---*/
+/*--- Capture a flag ---*/
 reliable server simulated function CaptureFlag()
 {
 	EnemyFlag.Captured();
@@ -57,6 +57,18 @@ reliable server simulated function CaptureFlag()
 reliable server function ServerNotifyFlagState(int FlagState, byte TeamNumber)
 {
 	NotifyFlagState(FlagState, TeamNumber);
+}
+
+
+/*--- Drop it ---*/
+reliable server function ServerDropFlag()
+{
+	if (WorldInfo.NetMode == NM_DedicatedServer)
+	{
+		G_CaptureTheFlag(WorldInfo.Game).FlagDropped(EnemyFlag.TeamIndex);
+	}
+	EnemyFlag.ServerDrop(Controller);
+	EnemyFlag = None;
 }
 
 
@@ -98,10 +110,7 @@ simulated State Dying
 		`log("PP > Dying, BeginState" @self);
 		if (EnemyFlag != None)
 		{
-			if (WorldInfo.NetMode == NM_DedicatedServer)
-				G_CaptureTheFlag(WorldInfo.Game).FlagDropped(EnemyFlag.TeamIndex);
-			EnemyFlag.Drop(Controller);
-			EnemyFlag = None;
+			ServerDropFlag();
 		}
 		super.BeginState(PreviousStateName);
 	}

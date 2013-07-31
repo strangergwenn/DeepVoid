@@ -54,8 +54,7 @@ replication
 }
 
 simulated event ReplicatedEvent(name VarName)
-{	
-	// Weapon class
+{
 	if (VarName == 'LightColor')
 	{
 		ClientSetFlagData();
@@ -172,6 +171,10 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 					{
 						PP.CaptureFlag();
 					}
+					else
+					{
+						`log("AF > Neutral pawn" @self);
+					}
 				}
 
 				// Enemy touch : take
@@ -181,7 +184,20 @@ event Touch(Actor Other, PrimitiveComponent OtherComp, vector HitLocation, vecto
 					AttachFlag(PP);
 				}
 			}
+
+			else
+			{
+				`log("AF > Neither returnable or at home" @self);
+			}
 		}
+		else
+		{
+			`log("AF > Nott a valid PR pawn / same holder" @Holder @PP @self);
+		}
+	}
+	else
+	{
+		`log("AF > Not a pawn" @self);
 	}
 }
 
@@ -238,32 +254,50 @@ reliable server simulated function AttachFlag(P_Pawn PP)
 
 
 /*--- Drop the flag ---*/
-simulated function Drop(Controller OldOwner)
+reliable server simulated function ServerDrop(Controller OldOwner)
 {
 	`log("AF > Drop" @self);
+	ServerLogAction("FDROP");
 
-	bCarried = false;
-	bIsReturnable = true;
+	Holder = None;
 	bCollideWorld = true;
 	bForceNetUpdate = true;
 
-	ServerLogAction("FDROP");
-	Holder = None;
+	if (Holder != None)
+	{
+		Velocity = Holder.Velocity;
+		if (Holder.Health > 0)
+		{
+			Velocity += 300 * vector(Holder.Rotation) + 100 * (0.5 + FRand()) * VRand();
+		}
+	}
+	Velocity.Z = 300.0;
+
 	SetBase(None);
-	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
-	
 	SetPhysics(PHYS_Falling);
-	Velocity = 100.0 * VRand();
-	Velocity.Z += 300.0;
+
+	SetTimer(1.0, false, 'SetReturnable');
+	SetTimer(AutoReturnTime, false, 'ReturnOnTimeOut');
+}
+
+
+/*-- Returnable ---*/
+reliable server simulated function SetReturnable()
+{
+	bIsReturnable = true;
+	Holder = None;
 }
 
 
 /*-- Return when dropped for too long ---*/
 simulated function ReturnOnTimeOut()
 {
-	`log("AF > ReturnOnTimeOut" @self);
-	A_FlagBase(HomeBase).FlagReturned();
-	Destroy();
+	if (bIsReturnable)
+	{
+		`log("AF > ReturnOnTimeOut" @self);
+		A_FlagBase(HomeBase).FlagReturned();
+		Destroy();
+	}
 }
 
 

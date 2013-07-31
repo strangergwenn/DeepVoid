@@ -66,4 +66,5 @@ defaultproperties
 {
 	MaxScore=3
 	PointsForKill=0
+	PlayerControllerClass=class'PC_PlayerController'
 }
